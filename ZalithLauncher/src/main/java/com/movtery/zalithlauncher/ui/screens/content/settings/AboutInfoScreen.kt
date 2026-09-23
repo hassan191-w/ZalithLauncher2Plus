@@ -121,46 +121,63 @@ fun AboutInfoScreen(
                             }
                         )
 
-ButtonIconItem(
-    icon = painterResource(R.drawable.img_avatar_movtery),
-    title = "Huseen zahran and hassan",
-    text = "MineLauncher Developer",
-    button = {
-        Button(
-            onClick = { openLink("https://github.com/hassan191-w") }
-        ) {
-            Text(text = "GitHub")
-        }
-    }
-)
-ButtonIconItem(
-    icon = painterResource(R.drawable.img_star1xr),
-    title = "Star1xr",
-    text = "Zalith Launcher 2 Plus Modifier",
-    button = {
-        Button(
-            onClick = { openLink(URL_STAR1XR) }
-        ) {
-            Text(text = stringResource(R.string.about_launcher_project_link))
-        }
-    }
-)
-ButtonIconItem(
-    icon = painterResource(R.drawable.img_avatar_movtery),
-    title = "AI Helper",
-    text = "AI Development Assistant",
-    button = {
-                Button(
-            onClick = { openLink("https://github.com/hassan191-w/ZalithLauncher2Plus") }
-        ) {
-            Text(text = "GitHub")
-        }
-    }
-)
-            }
-        }
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_avatar_movtery),
+                            title = stringResource(R.string.about_launcher_author_movtery_title),
+                            text = stringResource(R.string.about_launcher_author_movtery_text, BuildKeys.LAUNCHER_NAME),
+                            button = {
+                                Button(
+                                    onClick = { openLink(URL_SUPPORT) }
+                                ) {
+                                    Text(text = stringResource(R.string.about_sponsor))
+                                }
+                            }
+                        )
 
-        animatedItem(scope) { yOffset ->                ChunkLayout(
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_star1xr),
+                            title = stringResource(R.string.about_launcher_author_star1xr_title),
+                            text = stringResource(R.string.about_launcher_author_star1xr_text, BuildKeys.LAUNCHER_NAME),
+                            button = {
+                                Button(
+                                    onClick = { openLink(URL_STAR1XR) }
+                                ) {
+                                    Text(text = stringResource(R.string.about_launcher_project_link))
+                                }
+                            }
+                        )
+
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_avatar_movtery),
+                            title = "Huseen zahran and hassan",
+                            text = "MineLauncher Developer",
+                            button = {
+                                Button(
+                                    onClick = { openLink("https://github.com/hassan191-w") }
+                                ) {
+                                    Text(text = "GitHub")
+                                }
+                            }
+                        )
+
+                        ButtonIconItem(
+                            icon = painterResource(R.drawable.img_avatar_movtery),
+                            title = "AI Helper",
+                            text = "AI Development Assistant",
+                            button = {
+                                Button(
+                                    onClick = { openLink("https://github.com/hassan191-w/ZalithLauncher2Plus") }
+                                ) {
+                                    Text(text = "GitHub")
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+
+            animatedItem(scope) { yOffset ->
+                ChunkLayout(
                     modifier = Modifier.offset { IntOffset(x = 0, y = yOffset.roundToPx()) },
                     title = stringResource(R.string.about_acknowledgements_title)
                 ) {
@@ -239,7 +256,6 @@ ButtonIconItem(
                 }
             }
 
-            //额外依赖库板块
             animatedItem(scope) { yOffset ->
                 ChunkLayout(
                     modifier = Modifier.offset { IntOffset(x = 0, y = yOffset.roundToPx()) },
@@ -253,7 +269,6 @@ ButtonIconItem(
                 }
             }
 
-            //已加载插件板块
             PluginLoader.allPlugins.takeIf { it.isNotEmpty() }?.let { allPlugins ->
                 animatedItem(scope) { yOffset ->
                     ChunkLayout(
@@ -576,4 +591,3 @@ private fun LibraryInfoItem(
         }
     }
 }
-        }
