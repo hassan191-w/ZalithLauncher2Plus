@@ -150,16 +150,17 @@ ButtonIconItem(
     title = "AI Helper",
     text = "AI Development Assistant",
     button = {
-        Button(
+                Button(
             onClick = { openLink("https://github.com/hassan191-w/ZalithLauncher2Plus") }
         ) {
             Text(text = "GitHub")
         }
     }
 )
+            }
+        }
 
-            animatedItem(scope) { yOffset ->
-                ChunkLayout(
+        animatedItem(scope) { yOffset ->                ChunkLayout(
                     modifier = Modifier.offset { IntOffset(x = 0, y = yOffset.roundToPx()) },
                     title = stringResource(R.string.about_acknowledgements_title)
                 ) {
