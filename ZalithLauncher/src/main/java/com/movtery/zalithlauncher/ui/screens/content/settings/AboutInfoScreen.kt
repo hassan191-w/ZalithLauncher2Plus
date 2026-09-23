@@ -123,8 +123,8 @@ fun AboutInfoScreen(
 
                         ButtonIconItem(
                             icon = painterResource(R.drawable.img_avatar_movtery),
-                            title = stringResource(R.string.about_launcher_author_movtery_title),
-                            text = stringResource(R.string.about_launcher_author_movtery_text, BuildKeys.LAUNCHER_NAME),
+                            title = "Huseen zahran and hassan",
+                            text = "مطور MineLauncher",
                             button = {
                                 Button(
                                     onClick = { openLink(URL_SUPPORT) }
@@ -136,8 +136,8 @@ fun AboutInfoScreen(
 
                         ButtonIconItem(
                             icon = painterResource(R.drawable.img_star1xr),
-                            title = stringResource(R.string.about_launcher_author_star1xr_title),
-                            text = stringResource(R.string.about_launcher_author_star1xr_text, BuildKeys.LAUNCHER_NAME),
+                            title = "Star1xr",
+text = "معدّل Zalith Launcher 2 Plus",
                             button = {
                                 Button(
                                     onClick = { openLink(URL_STAR1XR) }
@@ -148,7 +148,31 @@ fun AboutInfoScreen(
                         )
                     }
                 }
-            }
+      ButtonIconItem(
+    icon = painterResource(R.drawable.img_avatar_movtery),
+    title = "Huseen zahran and hassan",
+    text = "مطوّر MineLauncher",
+    button = {
+        Button(
+            onClick = { openLink("https://github.com/hassan191-w") }
+        ) {
+            Text(text = "GitHub")
+        }
+    }
+)
+
+ButtonIconItem(
+    icon = painterResource(R.drawable.img_avatar_movtery),
+    title = "AI Helper",
+    text = "مساعد التطوير الذكي",
+    button = {
+        Button(
+            onClick = { openLink("https://github.com/hassan191-w/ZalithLauncher2Plus") }
+        ) {
+            Text(text = "GitHub")
+        }
+    }
+)
 
             animatedItem(scope) { yOffset ->
                 ChunkLayout(
