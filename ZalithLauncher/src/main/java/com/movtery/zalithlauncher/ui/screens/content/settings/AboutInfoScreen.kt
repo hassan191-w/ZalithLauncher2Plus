@@ -121,37 +121,10 @@ fun AboutInfoScreen(
                             }
                         )
 
-                        ButtonIconItem(
-                            icon = painterResource(R.drawable.img_avatar_movtery),
-                            title = "Huseen zahran and hassan",
-                            text = "مطور MineLauncher",
-                            button = {
-                                Button(
-                                    onClick = { openLink(URL_SUPPORT) }
-                                ) {
-                                    Text(text = stringResource(R.string.about_sponsor))
-                                }
-                            }
-                        )
-
-                        ButtonIconItem(
-                            icon = painterResource(R.drawable.img_star1xr),
-                            title = "Star1xr",
-text = "معدّل Zalith Launcher 2 Plus",
-                            button = {
-                                Button(
-                                    onClick = { openLink(URL_STAR1XR) }
-                                ) {
-                                    Text(text = stringResource(R.string.about_launcher_project_link))
-                                }
-                            }
-                        )
-                    }
-                }
-      ButtonIconItem(
+ButtonIconItem(
     icon = painterResource(R.drawable.img_avatar_movtery),
     title = "Huseen zahran and hassan",
-    text = "مطوّر MineLauncher",
+    text = "MineLauncher Developer",
     button = {
         Button(
             onClick = { openLink("https://github.com/hassan191-w") }
@@ -160,11 +133,22 @@ text = "معدّل Zalith Launcher 2 Plus",
         }
     }
 )
-
+ButtonIconItem(
+    icon = painterResource(R.drawable.img_star1xr),
+    title = "Star1xr",
+    text = "Zalith Launcher 2 Plus Modifier",
+    button = {
+        Button(
+            onClick = { openLink(URL_STAR1XR) }
+        ) {
+            Text(text = stringResource(R.string.about_launcher_project_link))
+        }
+    }
+)
 ButtonIconItem(
     icon = painterResource(R.drawable.img_avatar_movtery),
     title = "AI Helper",
-    text = "مساعد التطوير الذكي",
+    text = "AI Development Assistant",
     button = {
         Button(
             onClick = { openLink("https://github.com/hassan191-w/ZalithLauncher2Plus") }
