@@ -138,6 +138,7 @@ fun LauncherScreen(
     onNavigateToStats: () -> Unit = {},
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit = {},
+    onNavigateToNews: () -> Unit = {},
 ) {
     BaseScreen(
         screenKey = NormalNavKey.LauncherMain,
@@ -189,7 +190,8 @@ fun LauncherScreen(
                     onHomePageEvent = onHomePageEvent,
                     onNavigateToStats = onNavigateToStats,
                     onNavigateToPlayTimeStats = onNavigateToPlayTimeStats,
-                    onNavigateToLog = onNavigateToLog
+                    onNavigateToLog = onNavigateToLog,
+                    onNavigateToNews = onNavigateToNews
                 )
             }
 
@@ -232,6 +234,7 @@ private fun ContentMenu(
     onNavigateToStats: () -> Unit,
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit,
+    onNavigateToNews: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val yOffset by swapAnimateDpAsState(
@@ -281,7 +284,8 @@ private fun ContentMenu(
             modifier = Modifier.weight(1f),
             onNavigateToStats = onNavigateToStats,
             onNavigateToPlayTimeStats = onNavigateToPlayTimeStats,
-            onNavigateToLog = onNavigateToLog
+            onNavigateToLog = onNavigateToLog,
+            onNavigateToNews = onNavigateToNews
         )
 
         // Home page content below (only shown when configured)
@@ -331,6 +335,7 @@ private fun StatsGrid(
     onNavigateToStats: () -> Unit,
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit,
+    onNavigateToNews: () -> Unit = {},
 ) {
     val versions by VersionsManager.versions.collectAsStateWithLifecycle()
     val versionNames = remember(versions) { versions.map { it.getVersionName() } }
@@ -379,6 +384,10 @@ private fun StatsGrid(
         YouTubeCard(
             modifier = Modifier.fillMaxWidth().height(72.dp)
         )
+        NewsCard(
+            modifier = Modifier.fillMaxWidth().height(72.dp),
+            onNavigateToNews = onNavigateToNews
+        )
     }
 }
 
@@ -419,6 +428,51 @@ private fun YouTubeCard(
                 )
                 Text(
                     text = "شاهد آخر الفيديوهات والدروس",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.alpha(0.7f)
+                )
+            }
+            Text(
+                text = "↗",
+                fontSize = 20.sp,
+                modifier = Modifier.alpha(0.5f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun NewsCard(
+    modifier: Modifier = Modifier,
+    onNavigateToNews: () -> Unit = {}
+) {
+    BackgroundCard(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        onClick = onNavigateToNews
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "📰",
+                fontSize = 28.sp
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = "الأخبار",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "آخر التحديثات والفيديوهات",
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(0.7f)
                 )
