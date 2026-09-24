@@ -602,7 +602,16 @@ private fun NavigationUI(
                         },
                         onNavigateToLog = { logPath ->
                             backStack.navigateTo(NormalNavKey.LogView(logPath))
+                        },
+                        onNavigateToNews = {
+                            backStack.navigateTo(NormalNavKey.News)
                         }
+                    )
+                }
+                entry<NormalNavKey.News> { key ->
+                    NewsScreen(
+                        key = key,
+                        backStackViewModel = screenBackStackModel
                     )
                 }
                 entry<NestedNavKey.Settings> { key ->
@@ -750,12 +759,6 @@ private fun NavigationUI(
                 }
                 entry<NormalNavKey.Recordings> {
                     RecordingsScreen(
-                        backStackViewModel = screenBackStackModel,
-                    )
-                }
-                entry<NormalNavKey.News> { key ->
-                    NewsScreen(
-                        key = key,
                         backStackViewModel = screenBackStackModel,
                     )
                 }
