@@ -148,20 +148,20 @@ fun AboutInfoScreen(
                         )
 
                         ButtonIconItem(
-                            icon = painterResource(R.drawable.img_avatar_movtery),
+                            icon = painterResource(R.drawable.img_avatar_hassan),
                             title = "Huseen zahran and hassan",
                             text = "MineLauncher Developer",
                             button = {
                                 Button(
-                                    onClick = { openLink("https://github.com/hassan191-w") }
+                                    onClick = { openLink("https://youtube.com/@hassanzahran-oy4gd") }
                                 ) {
-                                    Text(text = "GitHub")
+                                    Text(text = "YouTube")
                                 }
                             }
                         )
 
                         ButtonIconItem(
-                            icon = painterResource(R.drawable.img_avatar_movtery),
+                            icon = painterResource(R.drawable.img_avatar_ai_helper),
                             title = "AI Helper",
                             text = "AI Development Assistant",
                             button = {
