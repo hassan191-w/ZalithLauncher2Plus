@@ -234,4 +234,9 @@ sealed interface NormalNavKey : TitledNavKey {
     @Serializable data object Recordings : NormalNavKey {
         @Contextual override val title: AndroidStringText = androidText(R.string.page_title_recordings)
     }
+
+    /** شاشة الأخبار */
+    @Serializable data object News : NormalNavKey {
+        @Contextual override val title: AndroidStringText = androidText(R.string.stats_changelog)
+    }
 }
