@@ -322,8 +322,8 @@ private fun ContentMenu(
     }
 }
 
-private const val CHANGELOGS_URL = "https://raw.githubusercontent.com/Star1xr/ZalithLauncher2Plus/refs/heads/main/CHANGELOGS_UPDATE.md"
-private const val CHANGELOGS_UPDATE_TR = "https://raw.githubusercontent.com/Star1xr/ZalithLauncher2Plus/refs/heads/main/CHANGELOGS_UPDATE_TR.md"
+private const val CHANGELOGS_URL = "https://raw.githubusercontent.com/hassan191-w/ZalithLauncher2Plus/refs/heads/main/CHANGELOGS_UPDATE.md"
+private const val CHANGELOGS_UPDATE_TR = "https://raw.githubusercontent.com/hassan191-w/ZalithLauncher2Plus/refs/heads/main/CHANGELOGS_UPDATE_TR.md"
 
 @Composable
 private fun StatsGrid(
@@ -374,6 +374,59 @@ private fun StatsGrid(
             LastLogCard(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 onNavigateToLog = onNavigateToLog
+            )
+        }
+        YouTubeCard(
+            modifier = Modifier.fillMaxWidth().height(72.dp)
+        )
+    }
+}
+
+@Composable
+private fun YouTubeCard(
+    modifier: Modifier = Modifier
+) {
+    val uriHandler = LocalUriHandler.current
+
+    BackgroundCard(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .combinedClickable(
+                    onClick = {
+                        uriHandler.openUri("https://youtube.com/@hassanzahran-oy4gd")
+                    }
+                )
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "▶️",
+                fontSize = 28.sp
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = "قناتي على يوتيوب",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "شاهد آخر الفيديوهات والدروس",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.alpha(0.7f)
+                )
+            }
+            Text(
+                text = "↗",
+                fontSize = 20.sp,
+                modifier = Modifier.alpha(0.5f)
             )
         }
     }
