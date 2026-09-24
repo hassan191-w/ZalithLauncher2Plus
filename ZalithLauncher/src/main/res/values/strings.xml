@@ -1560,7 +1560,6 @@
     <string name="account_capes_labynet_no_capes">No capes found for this account.</string>
     <string name="account_capes_delete_title">Delete Cape</string>
     <string name="account_capes_delete_message">Are you sure you want to delete \"%s\"?</string>
-
     <!-- Rank and Play Time -->
     <string name="rank_novice">Novice</string>
     <string name="rank_player">Player</string>
@@ -1569,9 +1568,6 @@
     <string name="rank_master">Master</string>
     <string name="rank_legend">Legend</string>
     <string name="play_time_format">Play Time: %s Hours</string>
-
-
-
     <string name="settings_chroma_name_title">Chroma Username</string>
     <string name="chroma_mode_red_blue">Red &amp; Blue</string>
     <string name="chroma_mode_sunset">Sunset</string>
@@ -1589,7 +1585,6 @@
     <string name="settings_export_failed">Export failed!</string>
     <string name="storage_permission_request_title">Storage Permission Required</string>
     <string name="storage_permission_request_message">To export settings/accounts to public storage, we need storage permission.</string>
-
     <!-- MobileGlues Settings -->
     <string name="mobileglues_settings_title">MobileGlues Settings</string>
     <string name="mobileglues_section_rendering">Rendering</string>
@@ -1626,14 +1621,11 @@
     <string name="mobileglues_cache_size_supporting">Set -1 to clear cache; 0 uses default (32)</string>
     <string name="mobileglues_saved_toast">MobileGlues settings saved</string>
     <string name="mobileglues_reset_confirm_message">Are you sure you want to reset MobileGlues settings?</string>
-
     <string name="download_game_classic_picker">Classic version list</string>
     <string name="download_game_classic_picker_summary">Show only release versions without search bar</string>
     <string name="download_game_installed_at_top">Installed versions first</string>
-
     <string name="versions_manage_select_default_folder">Set Default Game Folder</string>
     <string name="versions_manage_select_default_folder_title">Select Default Game Folder</string>
-
     <string name="versions_manage_move_versions">Move Versions</string>
     <string name="versions_manage_move_versions_select_versions">Select versions to move</string>
     <string name="versions_manage_move_versions_select_target">Select target game folder</string>
@@ -1648,7 +1640,6 @@
     <string name="versions_manage_move_versions_moving">Moving %1$s…</string>
     <string name="versions_manage_move_versions_done">Move complete</string>
     <string name="versions_manage_move_versions_failed">Move failed</string>
-
     <!-- Screen Recorder -->
     <string name="quick_access_shortcut_recordings">Recordings</string>
     <string name="game_menu_option_screen_recorder">Screen Recorder</string>
@@ -1672,4 +1663,15 @@
     <string name="recorder_notification_channel_name">Screen Recording</string>
     <string name="recorder_notification_title">Recording in progress</string>
     <string name="recorder_notification_text">Game audio and screen are being captured</string>
+
+    <!-- Splash Screen Video -->
+    <string name="settings_splash_video_title">Splash Screen Video</string>
+    <string name="settings_splash_video_summary">Choose an MP4 video to show when the launcher opens</string>
+    <string name="settings_splash_video_none">No video selected</string>
+    <string name="settings_splash_video_selected">✓ Video selected</string>
+    <string name="settings_splash_video_reset">Remove Video</string>
+    <string name="settings_splash_video_permission">Storage permission required to save the video</string>
+    <string name="settings_splash_video_saved">Video saved successfully</string>
+    <string name="settings_splash_video_removed">Video removed</string>
+    <string name="settings_splash_video_failed">Failed to save video</string>
 </resources>
