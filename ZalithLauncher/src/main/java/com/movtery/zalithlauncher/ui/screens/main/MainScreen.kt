@@ -100,6 +100,7 @@ import com.movtery.zalithlauncher.ui.screens.content.LauncherScreen
 import com.movtery.zalithlauncher.ui.screens.content.LicenseScreen
 import com.movtery.zalithlauncher.ui.screens.content.GameStatsScreen
 import com.movtery.zalithlauncher.ui.screens.content.CapeGalleryScreen
+import com.movtery.zalithlauncher.ui.screens.content.NewsScreen
 import com.movtery.zalithlauncher.ui.screens.content.PlayTimeStatsScreen
 import com.movtery.zalithlauncher.ui.screens.content.RecordingsScreen
 import com.movtery.zalithlauncher.ui.screens.content.LogViewScreen
@@ -749,6 +750,12 @@ private fun NavigationUI(
                 }
                 entry<NormalNavKey.Recordings> {
                     RecordingsScreen(
+                        backStackViewModel = screenBackStackModel,
+                    )
+                }
+                entry<NormalNavKey.News> { key ->
+                    NewsScreen(
+                        key = key,
                         backStackViewModel = screenBackStackModel,
                     )
                 }
