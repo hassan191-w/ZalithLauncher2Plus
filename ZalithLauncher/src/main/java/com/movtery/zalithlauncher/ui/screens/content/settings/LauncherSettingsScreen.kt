@@ -1,3 +1,21 @@
+/*
+ * Zalith Launcher 2
+ * Copyright (C) 2025 MovTery <movtery228@qq.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+ */
+
 package com.movtery.zalithlauncher.ui.screens.content.settings
 
 import android.os.Build
@@ -14,10 +32,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,7 +113,7 @@ fun LauncherSettingsScreen(
                 ) { uri ->
                     uri?.let {
                         coroutineScope.launch {
-                            val success = SettingsTransferUtils.importData(context, it)
+                            val success = SettingsTransferUtils.importData(context, listOf(it)) // ✅ تم التصحيح
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
@@ -139,7 +157,9 @@ fun LauncherSettingsScreen(
                     SettingsCard(
                         position = CardPosition.Bottom,
                         title = stringResource(R.string.settings_import),
-                        onClick = { importLauncher.launch("application/json") }
+                        onClick = {
+                            importLauncher.launch("application/json")
+                        }
                     )
                 }
             }
@@ -202,7 +222,9 @@ fun LauncherSettingsScreen(
                         items = AppLanguage.entries,
                         title = stringResource(R.string.settings_launcher_language),
                         getItemText = { stringResource(it.textRes) },
-                        onValueChange = { applyLanguage(it) }
+                        onValueChange = {
+                            applyLanguage(it)
+                        }
                     )
 
                     SwitchSettingsCard(
@@ -223,6 +245,7 @@ fun LauncherSettingsScreen(
                 }
             }
 
+            //启动器背景设置板块
             LocalBackgroundViewModel.current?.let { backgroundViewModel ->
                 AnimatedItem(scope) { yOffset ->
                     SettingsCardColumn(
@@ -281,6 +304,7 @@ fun LauncherSettingsScreen(
                 }
             }
 
+            // ✅ إعدادات فيديو شاشة الإقلاع
             AnimatedItem(scope) { yOffset ->
                 var hasSplashVideo by remember { mutableStateOf(VideoPreferences.getVideoUri(context) != null) }
                 val splashVideoPicker = rememberLauncherForActivityResult(
@@ -334,7 +358,8 @@ private fun CustomColorOperation(
 ) {
     when (customColorOperation) {
         CustomColorOperation.None -> {}
-        CustomColorOperation.Dialog -> {}
+        CustomColorOperation.Dialog -> {
+        }
     }
 }
 
@@ -353,11 +378,12 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.import(context, it) // ✅ تم التصحيح
+                    backgroundViewModel.import(context, it)
                 } catch (e: Exception) {
                     submitError(
                         ErrorViewModel.ThrowableMessage(
-                            message = androidText(e.message ?: "Unknown error") // ✅ تم التصحيح
+                            title = androidText(R.string.error_import_file), // ✅ إضافة title
+                            message = androidText(e.message ?: "Unknown error")
                         )
                     )
                 }
@@ -374,7 +400,11 @@ private fun CustomBackground(
             Text(text = stringResource(R.string.settings_launcher_background_title))
             Text(text = stringResource(R.string.settings_launcher_background_summary))
         }
-        Button(onClick = { mediaPicker.launch(Unit) }) {
+        Button(
+            onClick = {
+                mediaPicker.launch(Unit)
+            }
+        ) {
             Text(text = stringResource(R.string.generic_select))
         }
     }
