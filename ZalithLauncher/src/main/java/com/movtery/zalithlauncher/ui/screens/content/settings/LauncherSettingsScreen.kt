@@ -113,7 +113,7 @@ fun LauncherSettingsScreen(
                 ) { uri ->
                     uri?.let {
                         coroutineScope.launch {
-                            val success = SettingsTransferUtils.importData(context, listOf(it)) // ✅ تم التصحيح
+                             val success = SettingsTransferUtils.importData(context, it) ✅ تم التصحيح
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
@@ -378,7 +378,7 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.import(context, it)
+                    backgroundViewModel.import(context, it.first())
                 } catch (e: Exception) {
                     submitError(
                         ErrorViewModel.ThrowableMessage(
