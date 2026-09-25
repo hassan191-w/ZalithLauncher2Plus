@@ -24,8 +24,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -80,6 +78,7 @@ class SplashActivity : AppCompatActivity() {
                 override fun onPlaybackStateChanged(state: Int) {
                     if (state == Player.STATE_ENDED) goToMain()
                 }
+
                 override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                     goToMain()
                 }
