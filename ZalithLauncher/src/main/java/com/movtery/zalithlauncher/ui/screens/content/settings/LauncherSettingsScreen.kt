@@ -383,7 +383,8 @@ fun LauncherSettingsScreen(
                                         painter = painterResource(
                                             when (state) {
                                                 BackgroundBlur.FAST -> R.drawable.ic_speed
-                                                BackgroundBlur.DEFAULT -> R.drawable.ic_speed // تم تغييرها مؤقتاً لتجنب خطأ البناء
+                                                BackgroundBlur.DEFAULT -> R.drawable.ic_speed
+                                                else -> R.drawable.ic_speed // ✅ تمت إضافة else
                                             }
                                         ),
                                         contentDescription = null
@@ -395,7 +396,7 @@ fun LauncherSettingsScreen(
                 }
             }
 
-            // ✅ إعدادات فيديو شاشة الإقلاع (جديد)
+            // ✅ إعدادات فيديو شاشة الإقلاع
             AnimatedItem(scope) { yOffset ->
                 var hasSplashVideo by remember { mutableStateOf(VideoPreferences.getVideoUri(context) != null) }
                 val splashVideoPicker = rememberLauncherForActivityResult(
@@ -470,9 +471,9 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.setBackground(context, uri) // تم تصحيحها هنا
+                    backgroundViewModel.setCustomBackground(context, uri) // ✅ تم التصحيح
                 } catch (e: Exception) {
-                    submitError(ErrorViewModel.ThrowableMessage(androidText(e.message ?: "Unknown error"))) // تم تصحيحها هنا
+                    submitError(ErrorViewModel.ThrowableMessage(e, androidText(e.message ?: "Unknown error"))) // ✅ تم التصحيح
                 }
             }
         }
@@ -483,13 +484,13 @@ private fun CustomBackground(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column { // تم استبدال TitleAndSummary لتجنب خطأ المتغير الناقص
+        Column {
             Text(text = stringResource(R.string.settings_launcher_background_title))
             Text(text = stringResource(R.string.settings_launcher_background_summary))
         }
         Button(
             onClick = {
-                mediaPicker.launch(Unit) // تم تصحيحها هنا
+                mediaPicker.launch(Unit)
             }
         ) {
             Text(text = stringResource(R.string.generic_select))
