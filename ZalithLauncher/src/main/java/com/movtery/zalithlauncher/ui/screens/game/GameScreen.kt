@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.game
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -62,10 +63,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.movtery.inputmap.keycodes.ControlEventKeycode
 import com.movtery.inputmap.keycodes.LwjglGlfwKeycode
 import com.movtery.inputmap.keycodes.OPEN_CHAT
@@ -79,6 +86,7 @@ import com.movtery.layer_controller.layout.EmptyControlLayout
 import com.movtery.layer_controller.layout.loadLayoutFromFile
 import com.movtery.layer_controller.observable.ObservableControlLayout
 import com.movtery.zalithlauncher.R
+import com.movtery.zalithlauncher.VideoPreferences
 import com.movtery.zalithlauncher.bridge.CURSOR_DISABLED
 import com.movtery.zalithlauncher.bridge.ZLBridgeStates
 import com.movtery.zalithlauncher.bridge.ZLNativeInvoker
@@ -179,9 +187,7 @@ private class GameViewModel(
     var gameFps by mutableIntStateOf(0)
         private set
     private var fpsJob: Job? = null
-    /** 开始帧率捕获 */
     fun startFpsCapture() {
-        //开启一个新的协程，每秒更新一次帧率数据
         fpsJob = viewModelScope.launch(Dispatchers.Default) {
             while (true) {
                 runCatching {
@@ -194,7 +200,6 @@ private class GameViewModel(
             }
         }
     }
-    /** 停止帧率捕获 */
     fun stopFpsCapture() {
         fpsJob?.cancel()
         fpsJob = null
@@ -202,17 +207,13 @@ private class GameViewModel(
 
     var editorRefresh by mutableIntStateOf(0)
         private set
-    /** 可观察的控制布局 */
     var observableLayout by mutableStateOf<ObservableControlLayout?>(null)
         private set
-    /** 当前控制布局文件 */
     var currentControlFile by mutableStateOf<File?>(null)
         private set
-    /** 控制布局：控件层隐藏状态 */
     var controlLayerHideState by mutableStateOf(HideLayerWhen.None)
         private set
 
-    /** 是否正在编辑布局 */
     var isEditingLayout by mutableStateOf(false)
         private set
 
@@ -220,19 +221,15 @@ private class GameViewModel(
         if (controlLayerHideState != hideWhen) controlLayerHideState = hideWhen
     }
 
-    /** 虚拟鼠标滚动事件处理 */
     val mouseScrollUpEvent = MouseScrollEvent(viewModelScope, 1.0)
     val mouseScrollDownEvent = MouseScrollEvent(viewModelScope, -1.0)
 
-    /** 游戏内消息发送器 */
     val gameTextSender = GameTextSender(viewModelScope)
 
-    /** 控制布局控件点击事件处理器 */
     val eventHandler = EventHandler { event, pressed ->
         onKeyEvent(event, pressed)
     }
 
-    /** 处理控制布局类点击事件 */
     fun onKeyEvent(event: ClickEvent, pressed: Boolean) {
         val key = event.key
         when (event.type) {
@@ -258,7 +255,6 @@ private class GameViewModel(
                 )
             }
             ClickEvent.Type.SendText -> {
-                //游戏内文本发送事件
                 if (pressed) {
                     val text = event.key
                     val inGame = ZLBridgeStates.cursorMode.value == CURSOR_DISABLED
@@ -282,11 +278,10 @@ private class GameViewModel(
             withContext(Dispatchers.Main) {
                 observableLayout = null
                 val layout = withContext(Dispatchers.IO) {
-                    delay(10L.milliseconds) //刻意等待一会再加载
+                    delay(10L.milliseconds)
                     currentControlFile = layoutFile
                     getLayout(layoutFile)
                 }
-                //将控制布局加载为可供Compose加载的形式
                 observableLayout = ObservableControlLayout(layout)
             }
         }
@@ -303,9 +298,6 @@ private class GameViewModel(
         } ?: EmptyControlLayout
     }
 
-    /**
-     * 开始编辑控制布局模式
-     */
     fun startControlEditor(editorVM: EditorViewModel) {
         if (!isEditingLayout) {
             clearState()
@@ -314,9 +306,6 @@ private class GameViewModel(
         }
     }
 
-    /**
-     * 退出编辑控制布局模式（如果当前确实正在编辑控制布局）
-     */
     fun exitControlEditor() {
         viewModelScope.launch(Dispatchers.Main) {
             if (isEditingLayout) {
@@ -327,16 +316,10 @@ private class GameViewModel(
         }
     }
 
-    /**
-     * 切换游戏菜单
-     */
     fun switchMenu() {
         this.gameMenuState = this.gameMenuState.next()
     }
 
-    /**
-     * 清除所有游戏状态
-     */
     fun clearState() {
         mouseScrollUpEvent.cancel()
         mouseScrollDownEvent.cancel()
@@ -357,34 +340,21 @@ private class GameViewModel(
     }
 }
 
-/**
- * 鼠标滚轮事件管理
- * @param offset 滚轮滚动距离
- */
 private class MouseScrollEvent(
     private val scope: CoroutineScope,
     private val offset: Double
 ) {
     private var mouseScrollJob: Job? = null
 
-    /**
-     * 取消滚动事件，并重置状态
-     */
     fun cancel() {
         mouseScrollJob?.cancel()
         mouseScrollJob = null
     }
 
-    /**
-     * 单击响应一次滚轮滚动事件
-     */
     fun scrollSingle() {
         CallbackBridge.sendScroll(0.0, offset)
     }
 
-    /**
-     * 长按不间断触发滚轮滚动事件
-     */
     fun scrollLongPress() {
         mouseScrollJob?.cancel()
         mouseScrollJob = scope.launch {
@@ -402,14 +372,7 @@ private class MouseScrollEvent(
     }
 }
 
-/**
- * 游戏内消息发送器
- */
 private class GameTextSender(private val scope: CoroutineScope) {
-    /**
-     * @param text 要发送的文本
-     * @param inGame 当前是否处于游戏内，如果在游戏中，则会尝试打开聊天栏
-     */
     data class Data(
         val text: String,
         val inGame: Boolean
@@ -425,9 +388,6 @@ private class GameTextSender(private val scope: CoroutineScope) {
         job = null
     }
 
-    /**
-     * 尝试向游戏发送文本（排队发送）
-     */
     fun send(data: Data) {
         if (job?.isActive != true || messageChannel == null) {
             job?.cancel()
@@ -455,8 +415,6 @@ private class GameTextSender(private val scope: CoroutineScope) {
             }
 
             if (inGame) {
-                //根据options.txt中的配置，找到打开聊天栏的键
-                //如果找不到，则忽略这次事件
                 mapToKeycode(OPEN_CHAT, OPEN_CHAT_VALUE)?.let { openChat ->
                     CallbackBridge.sendKeyPress(openChat)
                     delay(50L.milliseconds)
@@ -465,7 +423,6 @@ private class GameTextSender(private val scope: CoroutineScope) {
                     LWJGLCharSender.sendEnter()
                 }
             } else {
-                //如果当前不在游戏内，则直接发送文本
                 sendText()
             }
         }
@@ -527,7 +484,6 @@ fun GameScreen(
 
     LaunchedEffect(viewModel.isEditingLayout) {
         val state = viewModel.isEditingLayout
-        //向VMActivity同步状态，编辑控制布局时，不会继续处理按键事件
         eventViewModel.sendEvent(EventViewModel.Event.Game.KeyHandle(state.not()))
     }
 
@@ -565,8 +521,6 @@ fun GameScreen(
         }
     )
 
-    // ── Recording launchers ───────────────────────────────────────────────────
-    // Flow: RECORD_AUDIO permission → MediaProjection consent dialog → start.
     val mediaProjectionManager = remember {
         context.getSystemService(MediaProjectionManager::class.java)
     }
@@ -576,7 +530,6 @@ fun GameScreen(
         context.stopService(Intent(context, MediaProjectionForegroundService::class.java))
     }
 
-    // Step 2: consent dialog result — stopProjectionService is already in scope above.
     val requestProjection = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -600,7 +553,6 @@ fun GameScreen(
         }
     }
 
-    // launchProjectionConsent references requestProjection, so it must come after it.
     fun launchProjectionConsent() {
         context.startForegroundService(
             Intent(context, MediaProjectionForegroundService::class.java)
@@ -608,7 +560,6 @@ fun GameScreen(
         requestProjection.launch(mediaProjectionManager.createScreenCaptureIntent())
     }
 
-    // Step 1: RECORD_AUDIO permission — launchProjectionConsent is in scope above.
     val requestAudioPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -622,11 +573,20 @@ fun GameScreen(
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
+        // ✅ خلفية الفيديو أثناء تحميل اللعبة (خلف كل شيء)
+        // تظهر فقط عند showGameInfo = true، وتختفي عندما تظهر اللعبة
+        AnimatedVisibility(
+            visible = showGameInfo,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            GameLoadingBackground(modifier = Modifier.fillMaxSize())
+        }
+
         val screenSize = rememberBoxSize()
 
         if (!viewModel.isEditingLayout) {
             if (AllSettings.gamepadControl.state && gamepadViewModel.gamepadEngaged) {
-                //手柄事件监听
                 GamepadKeyListener(
                     gamepadViewModel = gamepadViewModel,
                     isGrabbing = isGrabbing,
@@ -640,7 +600,6 @@ fun GameScreen(
                     }
                 )
 
-                //手柄摇杆控制移动事件监听
                 GamepadStickMovementListener(
                     gamepadViewModel = gamepadViewModel,
                     isGrabbing = isGrabbing,
@@ -650,7 +609,6 @@ fun GameScreen(
                 )
             }
 
-            //控制布局层
             val hideControls = showGameInfo && AllSettings.hideControlsDuringLoading.state
             if (!hideControls) ControlBoxLayout(
                 modifier = Modifier.fillMaxSize(),
@@ -665,7 +623,6 @@ fun GameScreen(
                 hideLayerWhen = viewModel.controlLayerHideState,
                 isDark = isLauncherInDarkTheme()
             ) {
-                //虚拟鼠标控制层
                 MouseControlLayout(
                     isTouchProxyEnabled = isTouchProxyEnabled,
                     modifier = Modifier.fillMaxSize(),
@@ -685,7 +642,6 @@ fun GameScreen(
                 )
             }
 
-            //物品栏触发层
             if (!hideControls) MinecraftHotbar(
                 screenSize = screenSize,
                 rule = AllSettings.hotbarRule.state,
@@ -702,7 +658,6 @@ fun GameScreen(
 
         }
 
-        //陀螺仪控制
         val isGyroscopeAvailable = remember(context) {
             isGyroscopeAvailable(context = context)
         }
@@ -781,7 +736,6 @@ fun GameScreen(
         )
 
         if (AllSettings.gamepadControl.state) {
-            //手柄事件捕获层
             SimpleGamepadCapture(
                 gamepadViewModel = gamepadViewModel
             )
@@ -807,7 +761,6 @@ fun GameScreen(
             }
         } else {
             if (AllSettings.showMenuBall.state) {
-                //在这里根据设置决定是否启用帧率捕获协程
                 val showFps = AllSettings.showFPS.state
                 DisposableEffect(showFps) {
                     if (showFps) viewModel.startFpsCapture()
@@ -862,7 +815,6 @@ fun GameScreen(
                 when (event) {
                     is EventViewModel.Event.Game.OnBack -> {
                         if (viewModel.isEditingLayout) {
-                            //处于控制布局编辑模式
                             editorViewModel.onBackPressed(
                                 context = context,
                                 onExit = {
@@ -872,7 +824,6 @@ fun GameScreen(
                         } else if (!AllSettings.showMenuBall.getValue()) {
                             viewModel.switchMenu()
                         } else {
-                            //按下返回键
                             val event = ClickEvent(
                                 type = ClickEvent.Type.Key,
                                 key = ControlEventKeycode.GLFW_KEY_ESCAPE
@@ -888,6 +839,48 @@ fun GameScreen(
                     else -> { /*忽略*/ }
                 }
             }
+    }
+}
+
+/**
+ * ✅ خلفية الفيديو أثناء تحميل اللعبة
+ * تعرض الفيديو المختار من الإعدادات كخلفية للشاشة السوداء
+ * الفيديو يتكرر تلقائياً حتى تظهر اللعبة
+ */
+@Composable
+private fun GameLoadingBackground(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val videoUri = remember { VideoPreferences.getVideoUri(context) }
+
+    // إذا لم يكن هناك فيديو محفوظ، لا تعرض شيئاً (الشاشة السوداء الافتراضية)
+    if (videoUri.isNullOrEmpty()) return
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val mediaItem = MediaItem.fromUri(Uri.parse(videoUri))
+            setMediaItem(mediaItem)
+            volume = 0f
+            repeatMode = Player.REPEAT_MODE_ONE
+            playWhenReady = true
+            prepare()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                player = exoPlayer
+                useController = false
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            }
+        },
+        modifier = modifier
+    )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
     }
 }
 
@@ -922,7 +915,6 @@ private fun GameInfoBox(
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
 
-                    //提示信息
                     Column(
                         modifier = Modifier.weight(1f, fill = false),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -962,17 +954,6 @@ private fun PreviewGameInfoBox() {
     }
 }
 
-/**
- * 鼠标控制层
- * @param isTouchProxyEnabled 是否启用控制代理（TouchController模组支持）
- * @param cursorMode 当前鼠标模式
- * @param textInputMode 输入法状态
- * @param isMoveOnlyPointer 检查指针是否被标记为仅处理滑动事件
- * @param onOccupiedPointer 标记指针已被占用
- * @param onReleasePointer 标记指针已被释放
- * @param onMouseMoved 实体鼠标操作时回调
- * @param onTouch 手指触摸操作鼠标层时回调
- */
 @Composable
 private fun MouseControlLayout(
     isTouchProxyEnabled: Boolean,
