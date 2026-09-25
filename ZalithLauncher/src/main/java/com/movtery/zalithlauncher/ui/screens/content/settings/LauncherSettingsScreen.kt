@@ -113,7 +113,7 @@ fun LauncherSettingsScreen(
                 ) { uri ->
                     uri?.let {
                         coroutineScope.launch {
-                            val success = SettingsTransferUtils.importData(context, listOf(it))
+                            val success = SettingsTransferUtils.importData(context, it)
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
