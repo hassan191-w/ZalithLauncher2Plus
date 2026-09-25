@@ -1,3 +1,21 @@
+/*
+ * Zalith Launcher 2
+ * Copyright (C) 2025 MovTery <movtery228@qq.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
+ */
+
 package com.movtery.zalithlauncher.ui.activities
 
 import android.content.Intent
@@ -12,6 +30,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.movtery.zalithlauncher.R
+import java.io.File
 
 class SplashActivity : AppCompatActivity() {
 
@@ -25,6 +44,15 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // ✅ إذا كانت هذه أول مرة يُشغّل فيها التطبيق، تخطى الفيديو
+        // وادخل مباشرة إلى MainActivity لكي تظهر شاشة التثبيت (Unpack)
+        if (isFirstRun()) {
+            markFirstRunDone()
+            goToMain()
+            return
+        }
+
         setContentView(R.layout.activity_splash)
 
         playerView = findViewById(R.id.splash_player_view)
@@ -41,6 +69,33 @@ class SplashActivity : AppCompatActivity() {
             logoLayout?.visibility = View.GONE
             playVideo(Uri.parse(videoUri))
         }
+    }
+
+    /**
+     * هل هذه أول مرة يُفتح فيها التطبيق؟
+     * نتحقق من وجود مجلد JRE في مساحة التخزين الداخلية للتطبيق
+     */
+    private fun isFirstRun(): Boolean {
+        val prefs = getSharedPreferences("minelauncher", MODE_PRIVATE)
+        val unpackDone = prefs.getBoolean("unpack_done", false)
+        if (unpackDone) return false
+
+        // إذا لم يكن هناك علامة في التفضيلات، نتحقق من وجود ملفات JRE
+        val internalDir = filesDir
+        val jreDir = File(internalDir, "runtimes")
+        val jre17 = File(jreDir, "jre-17")
+
+        // إذا لم تكن ملفات JRE موجودة، فهذه أول مرة
+        return !jre17.exists()
+    }
+
+    /**
+     * نضع علامة أن التطبيق شُغّل مرة واحدة على الأقل
+     * (سيتم تعيين "unpack_done" عند انتهاء فك الضغط في MainActivity)
+     */
+    private fun markFirstRunDone() {
+        val prefs = getSharedPreferences("minelauncher", MODE_PRIVATE)
+        prefs.edit().putBoolean("first_run_done", true).apply()
     }
 
     private fun playVideo(uri: Uri) {
