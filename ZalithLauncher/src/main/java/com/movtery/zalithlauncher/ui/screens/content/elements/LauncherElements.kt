@@ -24,37 +24,28 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
 import com.movtery.zalithlauncher.R
-import com.movtery.zalithlauncher.VideoPreferences
 import com.movtery.zalithlauncher.game.account.AccountsManager
 import com.movtery.zalithlauncher.game.launch.LaunchGame
 import com.movtery.zalithlauncher.game.plugin.ApkPlugin
@@ -89,7 +80,6 @@ import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import java.io.File
@@ -97,45 +87,58 @@ import kotlin.math.sqrt
 
 @Parcelize
 sealed interface QuickPlay : Parcelable {
+    /** 快速启动游玩存档  仅支持 1.20+ 23w14a+ */
     @Parcelize
     data class Save(val saveName: String): QuickPlay
+
+    /** 快速启动游玩服务器 */
     @Parcelize
     data class Server(val serverAddress: String): QuickPlay
 }
 
 sealed interface LaunchGameOperation {
     data object None : LaunchGameOperation
+    /** 没有安装版本/没有选中有效版本 */
     data object NoVersion : LaunchGameOperation
+    /** 版本名称非法时 */
     data class InvalidVersionName(val th: InvalidFilenameException) : LaunchGameOperation
+    /** 没有可用账号 */
     data object NoAccount : LaunchGameOperation
+
+    /** 渲染器可配置，但需要用到文件管理权限 */
     data class RendererNoStoragePermission(
         val renderer: RendererInterface,
         val version: Version,
         val quickPlay: QuickPlay?
     ) : LaunchGameOperation
+
+    /** 当前渲染器不支持选中版本 */
     data class UnsupportedRenderer(
         val renderer: RendererInterface,
         val version: Version,
         val quickPlay: QuickPlay?
     ): LaunchGameOperation
+
+    /** 当前已加载的插件不支持选中的版本 */
     data class UnsupportedPlugins(
         val plugins: List<ApkPlugin>,
         val version: Version,
         val quickPlay: QuickPlay?
     ) : LaunchGameOperation
+
+    /** 尝试启动：启动前检查一些东西 */
     data class TryLaunch(
         val version: Version?,
         val quickPlay: QuickPlay? = null
     ) : LaunchGameOperation
+
+    /** 需要请求麦克风权限 */
     data class MicrophonePermission(
         val version: Version,
         val quickPlay: QuickPlay?
     ) : LaunchGameOperation
-    /** ✅ عرض فيديو/صورة الإقلاع قبل تشغيل اللعبة */
-    data class ShowLaunchSplash(
-        val version: Version,
-        val quickPlay: QuickPlay?
-    ) : LaunchGameOperation
+
+    /** 正式启动 */
     data class RealLaunch(
         val version: Version,
         val quickPlay: QuickPlay?
@@ -166,9 +169,9 @@ fun LaunchGameOperation(
         is LaunchGameOperation.InvalidVersionName -> {
             val th = launchGameOperation.th
             SimpleAlertDialog(
-                title = androidx.compose.ui.res.stringResource(R.string.versions_manage_invalid),
+                title = stringResource(R.string.versions_manage_invalid),
                 text = th.getInvalidSummary(),
-                confirmText = androidx.compose.ui.res.stringResource(R.string.generic_cancel),
+                confirmText = stringResource(R.string.generic_cancel),
                 onDismiss = {
                     updateOperation(LaunchGameOperation.None)
                 }
@@ -196,6 +199,7 @@ fun LaunchGameOperation(
                         message = activity.getString(R.string.renderer_version_storage_permissions, renderer.getRendererName()),
                         messageSdk30 = activity.getString(R.string.renderer_version_storage_permissions_sdk30, renderer.getRendererName()),
                         onDialogCancel = {
+                            //用户拒绝授权，但仍然允许启动（不过这会导致配置无法读取）
                             updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
                         }
                     )
@@ -208,9 +212,9 @@ fun LaunchGameOperation(
             val version = launchGameOperation.version
             val quickPlay = launchGameOperation.quickPlay
             SimpleAlertDialog(
-                title = androidx.compose.ui.res.stringResource(R.string.generic_warning),
-                text = androidx.compose.ui.res.stringResource(R.string.renderer_version_unsupported_warning, renderer.getRendererName()),
-                confirmText = androidx.compose.ui.res.stringResource(R.string.generic_anyway),
+                title = stringResource(R.string.generic_warning),
+                text = stringResource(R.string.renderer_version_unsupported_warning, renderer.getRendererName()),
+                confirmText = stringResource(R.string.generic_anyway),
                 onConfirm = {
                     updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
                 },
@@ -224,9 +228,9 @@ fun LaunchGameOperation(
             val version = launchGameOperation.version
             val quickPlay = launchGameOperation.quickPlay
             SimpleAlertDialog(
-                title = androidx.compose.ui.res.stringResource(R.string.generic_warning),
-                text = androidx.compose.ui.res.stringResource(R.string.plugin_unsupported_warning, plugins.joinToString(", ") { it.appName }),
-                confirmText = androidx.compose.ui.res.stringResource(R.string.generic_anyway),
+                title = stringResource(R.string.generic_warning),
+                text = stringResource(R.string.plugin_unsupported_warning, plugins.joinToString(", ") { it.appName }),
+                confirmText = stringResource(R.string.generic_anyway),
                 onConfirm = {
                     updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
                 },
@@ -246,10 +250,10 @@ fun LaunchGameOperation(
                 }
 
             SimpleAlertDialog(
-                title = androidx.compose.ui.res.stringResource(R.string.microphone_check_title),
+                title = stringResource(R.string.microphone_check_title),
                 text = activity.getString(R.string.microphone_launch_dialog),
-                confirmText = androidx.compose.ui.res.stringResource(R.string.microphone_allow),
-                dismissText = androidx.compose.ui.res.stringResource(R.string.microphone_skip_ask),
+                confirmText = stringResource(R.string.microphone_allow),
+                dismissText = stringResource(R.string.microphone_skip_ask),
                 dismissByDialog = false,
                 onConfirm = {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -286,6 +290,7 @@ fun LaunchGameOperation(
                     return@LaunchedEffect
                 }
 
+                //开始检查渲染器的版本支持情况
                 Renderers.setCurrentRenderer(version.getRenderer())
                 val currentRenderer = Renderers.getCurrentRenderer()
                 val rendererMinVer = currentRenderer.getMinMCVersion()
@@ -311,6 +316,8 @@ fun LaunchGameOperation(
                     return@LaunchedEffect
                 }
 
+                //为可配置的渲染器检查文件管理权限
+                //前提：系统支持这个设置
                 if (
                     canHandlePermission &&  !hasStoragePermission &&
                     RendererPluginManager.isConfigurablePlugin(version.getRenderer())
@@ -319,6 +326,7 @@ fun LaunchGameOperation(
                     return@LaunchedEffect
                 }
 
+                //首次启动时请求麦克风权限（Simple Voice Chat等mod需要）
                 if (!launcherMMKV().getBoolean("microphone_asked", false) &&
                     ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -326,22 +334,9 @@ fun LaunchGameOperation(
                     return@LaunchedEffect
                 }
 
-                // ✅ بدلاً من التشغيل المباشر، نمر بشاشة الفيديو أولاً
-                updateOperation(LaunchGameOperation.ShowLaunchSplash(version, quickPlay))
+                //正式启动游戏
+                updateOperation(LaunchGameOperation.RealLaunch(version, quickPlay))
             }
-        }
-        // ✅ عرض فيديو الإقلاع قبل تشغيل اللعبة
-        is LaunchGameOperation.ShowLaunchSplash -> {
-            LaunchSplashScreen(
-                onFinished = {
-                    updateOperation(
-                        LaunchGameOperation.RealLaunch(
-                            launchGameOperation.version,
-                            launchGameOperation.quickPlay
-                        )
-                    )
-                }
-            )
         }
         is LaunchGameOperation.RealLaunch -> {
             LaunchedEffect(Unit) {
@@ -360,81 +355,6 @@ fun LaunchGameOperation(
                 )
                 updateOperation(LaunchGameOperation.None)
             }
-        }
-    }
-}
-
-/**
- * ✅ شاشة عرض فيديو الإقلاع قبل تشغيل اللعبة
- * الفيديو يتكرر تلقائياً (Loop) حتى انتهاء المهلة القصوى
- */
-@Composable
-private fun LaunchSplashScreen(
-    onFinished: () -> Unit
-) {
-    val context = LocalContext.current
-    val videoUri = remember { VideoPreferences.getVideoUri(context) }
-
-    // إذا لم يكن هناك فيديو محفوظ، انتقل مباشرة لتشغيل اللعبة
-    if (videoUri.isNullOrEmpty()) {
-        LaunchedEffect(Unit) {
-            onFinished()
-        }
-        return
-    }
-
-    var videoError by remember { mutableStateOf(false) }
-    var shouldSkip by remember { mutableStateOf(false) }
-
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            val mediaItem = MediaItem.fromUri(Uri.parse(videoUri))
-            setMediaItem(mediaItem)
-            volume = 0f
-            repeatMode = Player.REPEAT_MODE_ONE // ✅ تكرار لا نهائي
-            playWhenReady = true
-            prepare()
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    player = exoPlayer
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-
-    // ✅ استمع فقط للأخطاء (الفيديو يتكرر تلقائياً)
-    DisposableEffect(Unit) {
-        val listener = object : Player.Listener {
-            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-                videoError = true
-            }
-        }
-        exoPlayer.addListener(listener)
-        onDispose {
-            exoPlayer.removeListener(listener)
-            exoPlayer.release()
-        }
-    }
-
-    // ✅ المهلة القصوى: 5 دقائق (يمكنك تغيير الرقم)
-    // 60_000L = دقيقة، 300_000L = 5 دقائق، 600_000L = 10 دقائق
-    LaunchedEffect(Unit) {
-        delay(300_000L)
-        shouldSkip = true
-    }
-
-    // عندما تنتهي المهلة أو يحدث خطأ، انتقل لتشغيل اللعبة
-    LaunchedEffect(videoError, shouldSkip) {
-        if (videoError || shouldSkip) {
-            onFinished()
         }
     }
 }
@@ -487,6 +407,10 @@ private fun Modifier.backgroundBlur(
     }
 }
 
+/**
+ * 背景模糊效果
+ * @param enabled 是否应用模糊效果
+ */
 @Composable
 fun Modifier.backgroundGlass(
     blur: Int,
@@ -499,6 +423,9 @@ fun Modifier.backgroundGlass(
     return this.glass(blur, color, background.hazeState)
 }
 
+/**
+ * 背景模糊效果
+ */
 @Composable
 private fun Modifier.glass(
     blur: Int,
