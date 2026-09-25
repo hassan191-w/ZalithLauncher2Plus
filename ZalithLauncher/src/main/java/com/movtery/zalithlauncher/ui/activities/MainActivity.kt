@@ -121,96 +121,38 @@ import java.util.Locale
 
 private const val TAG = "MainActivity"
 
-// ✅ المتغيرات المطلوبة لعملية الاستيراد
-const val EXTRA_IMPORT_TYPE = "extra_import_type"
-const val EXTRA_IMPORT_URI = "extra_import_uri"
-
 @AndroidEntryPoint
 class MainActivity : BaseAppCompatActivity() {
     override fun isIgnoreNotch(): Boolean = AllSettings.launcherFullScreen.getValue()
 
-    /**
-     * 屏幕堆栈管理ViewModel
-     */
     private val screenBackStackModel: ScreenBackStackViewModel by viewModels()
-
-    /**
-     * 启动游戏ViewModel
-     */
     private val launchGameViewModel: LaunchGameViewModel by viewModels()
-
-    /**
-     * 错误信息ViewModel
-     */
     private val errorViewModel: ErrorViewModel by viewModels()
-
-    /**
-     * 与Compose交互的事件ViewModel
-     */
     val eventViewModel: EventViewModel by viewModels()
-
-    /**
-     * 启动器背景内容管理 ViewModel
-     */
     val backgroundViewModel: BackgroundViewModel by viewModels()
-
-    /**
-     * 整合包导入 ViewModel
-     */
     val modpackImportViewModel: ModpackImportViewModel by viewModels()
-
-    /**
-     * 启动器更新状态 ViewModel
-     */
     val launcherUpgradeViewModel: LauncherUpgradeViewModel by viewModels()
-
-    /**
-     * 启动器自定义主页 ViewModel
-     */
     val homePageViewModel: HomePageViewModel by viewModels()
-
-    /**
-     * 游戏日志分享菜单 ViewModel
-     */
     private val logShareViewModel: LogShareViewModel by viewModels()
-
-    /**
-     * 游戏日志上传 ViewModel
-     */
     private val logsUploadViewModel: LogsUploadViewModel by viewModels()
-
-    /**
-     * Vulkan检测状态 ViewModel
-     */
     private val vulkanCheckerViewModel: VulkanCheckerViewModel by viewModels()
 
-    /**
-     * 是否开启捕获按键模式
-     */
     private var isCaptureKey = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //处理外部导入
         val isImporting = handleImportIfNeeded(intent)
-
-        //加载渲染器
         Renderers.init()
-        //加载插件
         PluginLoader.loadAllPlugins(this, false)
         refreshData()
-
-        //初始化通知管理（创建渠道）
         NotificationManager.initManager(this)
 
-        //检查更新
         if (!isImporting && launcherUpgradeViewModel.operation == LauncherUpgradeOperation.None) {
             lifecycleScope.launch {
                 launcherUpgradeViewModel.checkOnAppStart()
             }
         }
 
-        //错误信息展示
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 errorViewModel.errorEvents.collect { tm ->
@@ -222,7 +164,6 @@ class MainActivity : BaseAppCompatActivity() {
             }
         }
 
-        //事件处理
         lifecycleScope.launch {
             eventViewModel.events.collect { event ->
                 when (event) {
@@ -279,7 +220,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                     is EventViewModel.Event.HomePage.GenDocPage -> {
                         if (homePageViewModel.isLocalExists()) {
-                            //如果本地主页文件已存在，则警告用户是否进行覆盖
                             homePageViewModel.updateOperation(
                                 HomePageOperation.WarningOverwrite
                             )
@@ -300,7 +240,6 @@ class MainActivity : BaseAppCompatActivity() {
                         )
                     }
                     else -> {
-                        //忽略
                     }
                 }
             }
@@ -338,13 +277,11 @@ class MainActivity : BaseAppCompatActivity() {
                         )
                     }
 
-                    //节日彩蛋效果层
                     FestivalEffects(
                         modifier = Modifier.fillMaxSize(),
                         festivals = festivals
                     )
 
-                    //启动游戏操作流程
                     LaunchGameOperation(
                         activity = this@MainActivity,
                         eventViewModel = eventViewModel,
@@ -371,7 +308,6 @@ class MainActivity : BaseAppCompatActivity() {
                     )
                 }
 
-                //显示赞助支持的小弹窗
                 if (!isImporting && finishedGame.state >= 100 && showSponsorship.state) {
                     SimpleAlertDialog(
                         title = stringResource(R.string.about_sponsor),
@@ -401,7 +337,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                 )
 
-                //用户确认版本名称 操作流程
                 ModpackVersionNameOperation(
                     operation = modpackImportViewModel.versionNameOperation,
                     onConfirmVersionName = { name ->
@@ -412,7 +347,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                 )
 
-                //用户确认使用移动网络 操作流程
                 ModpackConfirmUseMobileDataOperation(
                     operation = modpackImportViewModel.confirmMobileDataOperation,
                     onConfirmUse = { use ->
@@ -420,7 +354,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                 )
 
-                //启动器主页操作流程
                 val homePageOp by homePageViewModel.pageOp.collectAsStateWithLifecycle()
                 HomePageOperation(
                     operation = homePageOp,
@@ -432,7 +365,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                 )
 
-                //游戏日志分享菜单
                 val logFile = logShareViewModel.currentLogFile
                 if (logShareViewModel.showMenu && logFile != null) {
                     LogShareMenu(
@@ -474,7 +406,6 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                 )
 
-                //检查更新操作流程
                 LauncherUpgradeOperation(
                     operation = launcherUpgradeViewModel.operation,
                     onChanged = { launcherUpgradeViewModel.operation = it },
@@ -507,15 +438,10 @@ class MainActivity : BaseAppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleImportIfNeeded(intent)
-        // 重载渲染器
         Renderers.init(true)
-        // 重载插件
         PluginLoader.loadAllPlugins(this, true)
     }
 
-    /**
-     * 检查设备 Vulkan 支持情况
-     */
     private suspend fun checkVulkan() {
         val driver = DriverPluginManager.getDriver()
         val useTurnip = !(AllSettings.zinkPreferSystemDriver.getValue() || driver.isLauncher)
@@ -531,9 +457,6 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**
-     * 检查启动器更新
-     */
     private fun checkUpdate() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -551,7 +474,6 @@ class MainActivity : BaseAppCompatActivity() {
                 )
                 if (!success) throw RuntimeException()
             } catch (_: TooFrequentOperationException) {
-                //太频繁了
                 return@launch
             } catch (_: Exception) {
                 withContext(Dispatchers.Main) {
@@ -562,20 +484,15 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**
-     * 处理自定义主页的事件
-     */
     private suspend fun handleHomePageEvent(
         key: String,
         data: String?
     ) {
         runCatching {
             when (key) {
-                //浏览器内打开指定链接
                 "url" -> {
                     data?.let { url ->
                         val trimmed = url.trim()
-                        //防止 file://、intent:// 等危险 scheme
                         if (trimmed.startsWith("http://", ignoreCase = true) ||
                             trimmed.startsWith("https://", ignoreCase = true)
                         ) {
@@ -587,9 +504,7 @@ class MainActivity : BaseAppCompatActivity() {
                         }
                     }
                 }
-                //检查启动器更新
                 "check_update" -> checkUpdate()
-                //启动当前选中的游戏版本
                 "launch_game" -> {
                     val serverIp = data?.let { raw ->
                         runCatching {
@@ -602,7 +517,6 @@ class MainActivity : BaseAppCompatActivity() {
                         }.getOrNull()
                     }
                     if (!serverIp.isNullOrEmpty()) {
-                        //禁止控制字符与换行，防止注入命令行参数或配置文件
                         if (serverIp.none { it.code < 32 }) {
                             launchGameViewModel.tryPlayServer(serverIp)
                         } else {
@@ -612,23 +526,20 @@ class MainActivity : BaseAppCompatActivity() {
                         launchGameViewModel.tryLaunch()
                     }
                 }
-                //复制指定文本
                 "copy" -> {
                     data?.let { text ->
                         val trimmed = text.trim()
                         withContext(Dispatchers.Main) {
                             copyText(
                                 null,
-                                trimmed.take(10_000), //限制复制内容长度
+                                trimmed.take(10_000),
                                 this@MainActivity,
                                 showToast = true
                             )
                         }
                     }
                 }
-                //刷新主页
                 "refresh_page" -> homePageViewModel.reloadPage(true)
-                //分享游戏日志
                 "share_game_log" -> {
                     VersionsManager.currentVersion.value?.let { version ->
                         VersionsManager.getLatestLog(version).takeIf { it.exists() }
@@ -648,9 +559,6 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**
-     * 是否保持屏幕不熄屏
-     */
     private suspend fun keepScreen(on: Boolean) {
         withContext(Dispatchers.Main) {
             window?.apply {
@@ -663,11 +571,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**
-     * 弹出下载插件的链接提示对话框
-     */
     private suspend fun showDownloadPlugins(link: EventViewModel.Event.DownloadPlugins.Links) {
-        //匹配当前系统语言可见的网盘链接
         val locale = Locale.getDefault()
         val cloudDrive = link.cloudDrives.sortedByDescending {
             it.language.contains("_")
@@ -695,9 +599,6 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    /**
-     * 导入控制布局
-     */
     private fun importControlFiles(uris: List<Uri>) {
         fun showError(
             title: AndroidStringText = androidText(R.string.control_manage_import_failed),
@@ -754,10 +655,6 @@ class MainActivity : BaseAppCompatActivity() {
         )
     }
 
-    /**
-     * 处理外部导入
-     * @return 是否有导入任务正在进行中
-     */
     private fun handleImportIfNeeded(intent: Intent?): Boolean {
         if (intent == null) return false
 
@@ -791,9 +688,6 @@ class MainActivity : BaseAppCompatActivity() {
         return importing
     }
 
-    /**
-     * @return 是否已经触发了整合包导入程序
-     */
     private fun handleModpackImport(intent: Intent): Boolean {
         val uri: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_IMPORT_URI, Uri::class.java)
@@ -820,9 +714,6 @@ class MainActivity : BaseAppCompatActivity() {
         return uri != null
     }
 
-    /**
-     * @return 是否已经触发了控制布局导入程序
-     */
     private fun handleControlsImport(intent: Intent): Boolean {
         val uri: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_IMPORT_URI, Uri::class.java)
