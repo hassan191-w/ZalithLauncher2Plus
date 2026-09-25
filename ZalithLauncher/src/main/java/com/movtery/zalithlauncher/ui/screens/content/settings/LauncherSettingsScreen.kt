@@ -1,115 +1,45 @@
-/*
- * Zalith Launcher 2
- * Copyright (C) 2025 MovTery <movtery228@qq.com> and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
- */
-
 package com.movtery.zalithlauncher.ui.screens.content.settings
 
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.scrollbar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import com.materialkolor.PaletteStyle
-import com.movtery.colorpicker.ColorPickerController
-import com.movtery.colorpicker.components.HueBarPicker
-import com.movtery.colorpicker.rememberColorPickerController
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.VideoPreferences
 import com.movtery.zalithlauncher.contract.MediaPickerContract
-import com.movtery.zalithlauncher.coroutine.Task
-import com.movtery.zalithlauncher.coroutine.TaskSystem
-import com.movtery.zalithlauncher.path.PathManager
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.setting.enums.AppLanguage
-import com.movtery.zalithlauncher.setting.enums.BackgroundBlur
 import com.movtery.zalithlauncher.setting.enums.DarkMode
-import com.movtery.zalithlauncher.setting.enums.HomePageType
-import com.movtery.zalithlauncher.setting.enums.MirrorSourceType
 import com.movtery.zalithlauncher.setting.enums.applyLanguage
 import com.movtery.zalithlauncher.setting.unit.floatRange
 import com.movtery.zalithlauncher.ui.androidText
 import com.movtery.zalithlauncher.ui.base.BaseScreen
 import com.movtery.zalithlauncher.ui.components.AnimatedColumn
-import com.movtery.zalithlauncher.ui.components.IconTextButton
-import com.movtery.zalithlauncher.ui.components.MarqueeText
-import com.movtery.zalithlauncher.ui.components.OwnOutlinedTextField
-import com.movtery.zalithlauncher.ui.components.RadioCard
-import com.movtery.zalithlauncher.ui.components.SimpleAlertDialog
-import com.movtery.zalithlauncher.ui.components.SimpleEditDialog
-import com.movtery.zalithlauncher.ui.components.TitleAndSummary
-import com.movtery.zalithlauncher.ui.components.WarningCard
-import com.movtery.zalithlauncher.ui.components.fadeEdge
-import com.movtery.zalithlauncher.ui.components.toColorOrNull
-import com.movtery.zalithlauncher.ui.components.toHex
 import com.movtery.zalithlauncher.ui.components.verticalScrollWithBar
 import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
-import com.movtery.zalithlauncher.ui.screens.content.elements.DisabledAlpha
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.CardPosition
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.EnumSettingsCard
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.IntSliderSettingsCard
@@ -118,24 +48,15 @@ import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCa
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SettingsCardColumn
 import com.movtery.zalithlauncher.ui.screens.content.settings.layouts.SwitchSettingsCard
 import com.movtery.zalithlauncher.ui.theme.ColorThemeType
-import com.movtery.zalithlauncher.ui.theme.cardColor
-import com.movtery.zalithlauncher.ui.theme.onCardColor
-import com.movtery.zalithlauncher.utils.animation.TransitionAnimationType
-import com.movtery.zalithlauncher.utils.file.shareFile
 import com.movtery.zalithlauncher.utils.checkStoragePermissions
-import com.movtery.zalithlauncher.utils.isChinaMainland
-import com.movtery.zalithlauncher.utils.logging.Logger
 import com.movtery.zalithlauncher.utils.settings.SettingsTransferUtils
-import com.movtery.zalithlauncher.utils.string.getMessageOrToString
 import com.movtery.zalithlauncher.viewmodel.BackgroundViewModel
 import com.movtery.zalithlauncher.viewmodel.ErrorViewModel
 import com.movtery.zalithlauncher.viewmodel.EventViewModel
 import com.movtery.zalithlauncher.viewmodel.LocalBackgroundViewModel
-import com.movtery.zalithlauncher.viewmodel.LocalHomePageViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 private const val TAG = "LauncherSettingsScreen"
 
@@ -218,9 +139,7 @@ fun LauncherSettingsScreen(
                     SettingsCard(
                         position = CardPosition.Bottom,
                         title = stringResource(R.string.settings_import),
-                        onClick = {
-                            importLauncher.launch("application/json")
-                        }
+                        onClick = { importLauncher.launch("application/json") }
                     )
                 }
             }
@@ -283,9 +202,7 @@ fun LauncherSettingsScreen(
                         items = AppLanguage.entries,
                         title = stringResource(R.string.settings_launcher_language),
                         getItemText = { stringResource(it.textRes) },
-                        onValueChange = {
-                            applyLanguage(it)
-                        }
+                        onValueChange = { applyLanguage(it) }
                     )
 
                     SwitchSettingsCard(
@@ -306,7 +223,6 @@ fun LauncherSettingsScreen(
                 }
             }
 
-            //启动器背景设置板块
             LocalBackgroundViewModel.current?.let { backgroundViewModel ->
                 AnimatedItem(scope) { yOffset ->
                     SettingsCardColumn(
@@ -365,7 +281,6 @@ fun LauncherSettingsScreen(
                 }
             }
 
-            // ✅ إعدادات فيديو شاشة الإقلاع
             AnimatedItem(scope) { yOffset ->
                 var hasSplashVideo by remember { mutableStateOf(VideoPreferences.getVideoUri(context) != null) }
                 val splashVideoPicker = rememberLauncherForActivityResult(
@@ -419,8 +334,7 @@ private fun CustomColorOperation(
 ) {
     when (customColorOperation) {
         CustomColorOperation.None -> {}
-        CustomColorOperation.Dialog -> {
-        }
+        CustomColorOperation.Dialog -> {}
     }
 }
 
@@ -439,9 +353,13 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.setBackground(context, uri)
+                    backgroundViewModel.import(context, it) // ✅ تم التصحيح
                 } catch (e: Exception) {
-                    submitError(ErrorViewModel.ThrowableMessage(e, androidText(e.message ?: "Unknown error")))
+                    submitError(
+                        ErrorViewModel.ThrowableMessage(
+                            message = androidText(e.message ?: "Unknown error") // ✅ تم التصحيح
+                        )
+                    )
                 }
             }
         }
@@ -456,11 +374,7 @@ private fun CustomBackground(
             Text(text = stringResource(R.string.settings_launcher_background_title))
             Text(text = stringResource(R.string.settings_launcher_background_summary))
         }
-        Button(
-            onClick = {
-                mediaPicker.launch(Unit)
-            }
-        ) {
+        Button(onClick = { mediaPicker.launch(Unit) }) {
             Text(text = stringResource(R.string.generic_select))
         }
     }
