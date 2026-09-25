@@ -94,7 +94,6 @@ class SplashActivity : AppCompatActivity() {
         if (transitioned) return
         transitioned = true
         handler.removeCallbacks(goMainRunnable)
-        // MainActivity في نفس الحزمة ← ui.activities
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
