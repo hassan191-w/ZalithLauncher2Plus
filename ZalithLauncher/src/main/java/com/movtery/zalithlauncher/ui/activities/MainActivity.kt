@@ -57,8 +57,6 @@ import com.movtery.zalithlauncher.game.plugin.PluginLoader
 import com.movtery.zalithlauncher.game.plugin.driver.DriverPluginManager
 import com.movtery.zalithlauncher.game.renderer.Renderers
 import com.movtery.zalithlauncher.game.version.installed.VersionsManager
-import com.movtery.zalithlauncher.ui.activities.EXTRA_LAUNCH_VERSION
-import com.movtery.zalithlauncher.ui.activities.EXTRA_OPEN_LOG
 import com.movtery.zalithlauncher.notification.NotificationManager
 import com.movtery.zalithlauncher.path.PathManager
 import com.movtery.zalithlauncher.path.URL_SUPPORT
@@ -122,6 +120,10 @@ import java.io.File
 import java.util.Locale
 
 private const val TAG = "MainActivity"
+
+// ✅ المتغيرات المطلوبة لعملية الاستيراد
+const val EXTRA_IMPORT_TYPE = "extra_import_type"
+const val EXTRA_IMPORT_URI = "extra_import_uri"
 
 @AndroidEntryPoint
 class MainActivity : BaseAppCompatActivity() {
