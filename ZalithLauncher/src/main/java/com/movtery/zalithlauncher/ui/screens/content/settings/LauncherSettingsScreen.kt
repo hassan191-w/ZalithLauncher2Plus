@@ -141,7 +141,6 @@ private const val TAG = "LauncherSettingsScreen"
 
 private sealed interface CustomColorOperation {
     data object None : CustomColorOperation
-    /** 展示自定义主题颜色 Dialog */
     data object Dialog : CustomColorOperation
 }
 
@@ -360,37 +359,7 @@ fun LauncherSettingsScreen(
                             valueRange = AllSettings.backgroundBlur.floatRange,
                             suffix = "Dp",
                             enabled = backgroundViewModel.isValid,
-                            fineTuningControl = true,
-                            appendContent = {
-                                val unit = AllSettings.backgroundBlurType
-                                val state = unit.state
-                                IconButton(
-                                    modifier = Modifier
-                                        .padding(start = 12.dp)
-                                        .size(32.dp),
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                                        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = DisabledAlpha),
-                                        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = DisabledAlpha),
-                                    ),
-                                    onClick = {
-                                        unit.save(state.switch())
-                                    },
-                                    enabled = backgroundViewModel.isValid
-                                ) {
-                                    Icon(
-                                        painter = painterResource(
-                                            when (state) {
-                                                BackgroundBlur.FAST -> R.drawable.ic_speed
-                                                BackgroundBlur.DEFAULT -> R.drawable.ic_speed
-                                                else -> R.drawable.ic_speed // ✅ تمت إضافة else
-                                            }
-                                        ),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
+                            fineTuningControl = true
                         )
                     }
                 }
@@ -451,7 +420,6 @@ private fun CustomColorOperation(
     when (customColorOperation) {
         CustomColorOperation.None -> {}
         CustomColorOperation.Dialog -> {
-            // Dialog implementation if needed
         }
     }
 }
@@ -471,9 +439,9 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.setCustomBackground(context, uri) // ✅ تم التصحيح
+                    backgroundViewModel.setBackground(context, uri)
                 } catch (e: Exception) {
-                    submitError(ErrorViewModel.ThrowableMessage(e, androidText(e.message ?: "Unknown error"))) // ✅ تم التصحيح
+                    submitError(ErrorViewModel.ThrowableMessage(e, androidText(e.message ?: "Unknown error")))
                 }
             }
         }
