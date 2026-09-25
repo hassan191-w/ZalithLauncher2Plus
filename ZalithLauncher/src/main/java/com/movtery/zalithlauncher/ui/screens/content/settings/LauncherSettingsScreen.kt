@@ -308,13 +308,17 @@ fun LauncherSettingsScreen(
             AnimatedItem(scope) { yOffset ->
                 var hasSplashVideo by remember { mutableStateOf(VideoPreferences.getVideoUri(context) != null) }
                 val splashVideoPicker = rememberLauncherForActivityResult(
-                    contract = androidx.activity.result.contract.ActivityResultContracts.GetContent()
+                    contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
                 ) { uri ->
                     uri?.let {
-                        context.contentResolver.takePersistableUriPermission(
-                            it,
-                            android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        )
+                        try {
+                            context.contentResolver.takePersistableUriPermission(
+                                it,
+                                android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            )
+                        } catch (e: Exception) {
+                            // تجاهل الخطأ إذا كان الملف لا يدعم الصلاحيات الدائمة
+                        }
                         VideoPreferences.saveVideoUri(context, it.toString())
                         hasSplashVideo = true
                         Toast.makeText(context, R.string.settings_splash_video_saved, Toast.LENGTH_SHORT).show()
@@ -331,7 +335,7 @@ fun LauncherSettingsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         position = if (hasSplashVideo) CardPosition.Top else CardPosition.Bottom,
                         title = stringResource(R.string.settings_splash_video_title),
-                        onClick = { splashVideoPicker.launch("video/*") }
+                        onClick = { splashVideoPicker.launch(arrayOf("video/*")) }
                     )
                     if (hasSplashVideo) {
                         SettingsCard(
