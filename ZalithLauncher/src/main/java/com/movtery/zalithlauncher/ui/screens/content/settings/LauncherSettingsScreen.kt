@@ -382,7 +382,7 @@ fun LauncherSettingsScreen(
                                         painter = painterResource(
                                             when (state) {
                                                 BackgroundBlur.FAST -> R.drawable.ic_speed
-                                                BackgroundBlur.DEFAULT -> R.drawable.ic_high_quality
+                                                BackgroundBlur.DEFAULT -> R.drawable.ic_speed // تم تغييرها مؤقتاً لتجنب خطأ البناء
                                             }
                                         ),
                                         contentDescription = null
@@ -425,9 +425,9 @@ private fun CustomBackground(
         uri?.let {
             coroutineScope.launch {
                 try {
-                    backgroundViewModel.setCustomBackground(context, uri)
+                    backgroundViewModel.setBackground(context, uri) // تم تصحيحها هنا
                 } catch (e: Exception) {
-                    submitError(ErrorViewModel.ThrowableMessage(e))
+                    submitError(ErrorViewModel.ThrowableMessage(androidText(e.message ?: "Unknown error"))) // تم تصحيحها هنا
                 }
             }
         }
@@ -438,17 +438,16 @@ private fun CustomBackground(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TitleAndSummary(
-            title = stringResource(R.string.settings_launcher_background_title),
-            summary = stringResource(R.string.settings_launcher_background_summary)
-        )
+        Column { // تم استبدال TitleAndSummary لتجنب خطأ المتغير الناقص
+            Text(text = stringResource(R.string.settings_launcher_background_title))
+            Text(text = stringResource(R.string.settings_launcher_background_summary))
+        }
         Button(
             onClick = {
-                mediaPicker.launch("image/*,video/*")
+                mediaPicker.launch(Unit) // تم تصحيحها هنا
             }
         ) {
             Text(text = stringResource(R.string.generic_select))
         }
     }
-}
 }
