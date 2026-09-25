@@ -3,7 +3,7 @@ package com.movtery.zalithlauncher
 import android.content.Context
 
 object VideoPreferences {
-    private const val PREFS_NAME = "launcher_video_prefs"
+    private const val PREFS_NAME = "minelauncher"
     private const val KEY_VIDEO_URI = "splash_video_uri"
 
     fun saveVideoUri(context: Context, uri: String) {
