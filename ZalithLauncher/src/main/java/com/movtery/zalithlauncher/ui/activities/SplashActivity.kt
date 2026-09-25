@@ -18,9 +18,6 @@
 
 package com.movtery.zalithlauncher.ui.activities
 
-// المتغير المطلوب لحل مشكلة ShortcutUtils
-const val EXTRA_LAUNCH_VERSION = "extra_launch_version"
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -33,6 +30,9 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.movtery.zalithlauncher.R
+
+// المتغير المطلوب لحل مشكلة ShortcutUtils (تم وضعه في المكان الصحيح)
+const val EXTRA_LAUNCH_VERSION = "extra_launch_version"
 
 class SplashActivity : AppCompatActivity() {
 
