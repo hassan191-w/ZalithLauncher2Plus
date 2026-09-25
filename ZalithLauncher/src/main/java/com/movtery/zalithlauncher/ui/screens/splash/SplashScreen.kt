@@ -18,6 +18,7 @@
 
 package com.movtery.zalithlauncher.ui.screens.splash
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +30,23 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.movtery.zalithlauncher.BuildKeys
+import com.movtery.zalithlauncher.VideoPreferences
 import com.movtery.zalithlauncher.components.InstallableItem
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.rememberTransitionSpec
@@ -53,25 +63,65 @@ fun SplashScreen(
     unpackItems: List<InstallableItem>,
     screenViewModel: SplashBackStackViewModel
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        TopBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            contentColor = onBackgroundColor()
-        )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // تشغيل الفيديو كخلفية لشاشة الإقلاع
+        val context = LocalContext.current
+        val videoUri = remember { VideoPreferences.getVideoUri(context) }
+        if (!videoUri.isNullOrEmpty()) {
+            VideoBackground(uri = videoUri)
+        }
 
-        NavigationUI(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            startAllTask = startAllTask,
-            unpackItems = unpackItems,
-            screenViewModel = screenViewModel
-        )
+        // الواجهة الأصلية (فك الضغط والإعدادات) تظهر فوق الفيديو
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            TopBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentColor = onBackgroundColor()
+            )
+
+            NavigationUI(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                startAllTask = startAllTask,
+                unpackItems = unpackItems,
+                screenViewModel = screenViewModel
+            )
+        }
+    }
+}
+
+@Composable
+private fun VideoBackground(uri: String) {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val mediaItem = MediaItem.fromUri(Uri.parse(uri))
+            setMediaItem(mediaItem)
+            playWhenReady = true
+            repeatMode = ExoPlayer.REPEAT_MODE_OFF
+            prepare()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                player = exoPlayer
+                useController = false // إخفاء أزرار التحكم
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM // ملء الشاشة
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
     }
 }
 
