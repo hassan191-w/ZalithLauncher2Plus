@@ -78,6 +78,7 @@ import com.movtery.colorpicker.ColorPickerController
 import com.movtery.colorpicker.components.HueBarPicker
 import com.movtery.colorpicker.rememberColorPickerController
 import com.movtery.zalithlauncher.R
+import com.movtery.zalithlauncher.VideoPreferences
 import com.movtery.zalithlauncher.contract.MediaPickerContract
 import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.coroutine.TaskSystem
@@ -388,6 +389,50 @@ fun LauncherSettingsScreen(
                                         contentDescription = null
                                     )
                                 }
+                            }
+                        )
+                    }
+                }
+            }
+
+            // ✅ إعدادات فيديو شاشة الإقلاع (جديد)
+            AnimatedItem(scope) { yOffset ->
+                var hasSplashVideo by remember { mutableStateOf(VideoPreferences.getVideoUri(context) != null) }
+                val splashVideoPicker = rememberLauncherForActivityResult(
+                    contract = androidx.activity.result.contract.ActivityResultContracts.GetContent()
+                ) { uri ->
+                    uri?.let {
+                        context.contentResolver.takePersistableUriPermission(
+                            it,
+                            android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                        VideoPreferences.saveVideoUri(context, it.toString())
+                        hasSplashVideo = true
+                        Toast.makeText(context, R.string.settings_splash_video_saved, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                SettingsCardColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                        .offset { IntOffset(x = 0, y = yOffset.roundToPx()) }
+                ) {
+                    SettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = if (hasSplashVideo) CardPosition.Top else CardPosition.Bottom,
+                        title = stringResource(R.string.settings_splash_video_title),
+                        onClick = { splashVideoPicker.launch("video/*") }
+                    )
+                    if (hasSplashVideo) {
+                        SettingsCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            position = CardPosition.Bottom,
+                            title = stringResource(R.string.settings_splash_video_reset),
+                            onClick = {
+                                VideoPreferences.clearVideoUri(context)
+                                hasSplashVideo = false
+                                Toast.makeText(context, R.string.settings_splash_video_removed, Toast.LENGTH_SHORT).show()
                             }
                         )
                     }
