@@ -1,25 +1,6 @@
-/*
- * Zalith Launcher 2
- * Copyright (C) 2025 MovTery <movtery228@qq.com> and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.txt>.
- */
-
 package com.movtery.zalithlauncher.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -46,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.context.COPY_LABEL_LINK
@@ -168,11 +148,9 @@ class MainActivity : BaseAppCompatActivity() {
             eventViewModel.events.collect { event ->
                 when (event) {
                     is EventViewModel.Event.Key.StartKeyCapture -> {
-                        Logger.info("CollectEvent", "Start key capture!")
                         isCaptureKey = true
                     }
                     is EventViewModel.Event.Key.StopKeyCapture -> {
-                        Logger.info("CollectEvent", "Stop key capture!")
                         isCaptureKey = false
                     }
                     is EventViewModel.Event.OpenLink -> {
@@ -220,9 +198,7 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                     is EventViewModel.Event.HomePage.GenDocPage -> {
                         if (homePageViewModel.isLocalExists()) {
-                            homePageViewModel.updateOperation(
-                                HomePageOperation.WarningOverwrite
-                            )
+                            homePageViewModel.updateOperation(HomePageOperation.WarningOverwrite)
                         } else {
                             homePageViewModel.genDocPage(this@MainActivity)
                         }
@@ -239,18 +215,14 @@ class MainActivity : BaseAppCompatActivity() {
                             logPath = event.path
                         )
                     }
-                    else -> {
-                    }
+                    else -> {}
                 }
             }
         }
 
         val finishedGame = AllSettings.finishedGame
         val showSponsorship = AllSettings.showSponsorship
-
-        val festivals = getTodayFestivals(
-            containsChinese = isChinese(this@MainActivity)
-        )
+        val festivals = getTodayFestivals(containsChinese = isChinese(this@MainActivity))
 
         setContent {
             ZalithLauncherTheme(
@@ -287,13 +259,9 @@ class MainActivity : BaseAppCompatActivity() {
                         eventViewModel = eventViewModel,
                         launchGameOperation = launchGameViewModel.launchGameOperation,
                         updateOperation = { launchGameViewModel.updateOperation(it) },
-                        exitActivity = {
-                            this@MainActivity.finish()
-                        },
+                        exitActivity = { this@MainActivity.finish() },
                         waitForVulkanChecker = vulkanCheckerViewModel::waitForVulkanChecker,
-                        submitError = {
-                            errorViewModel.showError(it)
-                        },
+                        submitError = { errorViewModel.showError(it) },
                         toAccountManageScreen = { menu ->
                             screenBackStackModel.mainScreen.navigateTo(
                                 screenKey = NormalNavKey.AccountManager(menu)
@@ -313,14 +281,10 @@ class MainActivity : BaseAppCompatActivity() {
                         title = stringResource(R.string.about_sponsor),
                         text = stringResource(R.string.game_saponsorship_finished_game, finishedGame.state),
                         dismissText = stringResource(R.string.generic_close),
-                        onDismiss = {
-                            showSponsorship.save(false)
-                        },
+                        onDismiss = { showSponsorship.save(false) },
                         onConfirm = {
                             showSponsorship.save(false)
-                            eventViewModel.sendEvent(
-                                EventViewModel.Event.OpenLink(URL_SUPPORT)
-                            )
+                            eventViewModel.sendEvent(EventViewModel.Event.OpenLink(URL_SUPPORT))
                         }
                     )
                 }
@@ -331,38 +295,26 @@ class MainActivity : BaseAppCompatActivity() {
                     importer = modpackImportViewModel.importer,
                     onCancel = {
                         modpackImportViewModel.cancel()
-                        lifecycleScope.launch {
-                            keepScreen(false)
-                        }
+                        lifecycleScope.launch { keepScreen(false) }
                     }
                 )
 
                 ModpackVersionNameOperation(
                     operation = modpackImportViewModel.versionNameOperation,
-                    onConfirmVersionName = { name ->
-                        modpackImportViewModel.confirmVersionName(name)
-                    },
-                    onCancel = {
-                        modpackImportViewModel.cancel()
-                    }
+                    onConfirmVersionName = { name -> modpackImportViewModel.confirmVersionName(name) },
+                    onCancel = { modpackImportViewModel.cancel() }
                 )
 
                 ModpackConfirmUseMobileDataOperation(
                     operation = modpackImportViewModel.confirmMobileDataOperation,
-                    onConfirmUse = { use ->
-                        modpackImportViewModel.confirmUseMobileData(use)
-                    }
+                    onConfirmUse = { use -> modpackImportViewModel.confirmUseMobileData(use) }
                 )
 
                 val homePageOp by homePageViewModel.pageOp.collectAsStateWithLifecycle()
                 HomePageOperation(
                     operation = homePageOp,
-                    onChange = {
-                        homePageViewModel.updateOperation(it)
-                    },
-                    onGenDocPage = {
-                        homePageViewModel.genDocPage(this@MainActivity)
-                    }
+                    onChange = { homePageViewModel.updateOperation(it) },
+                    onGenDocPage = { homePageViewModel.genDocPage(this@MainActivity) }
                 )
 
                 val logFile = logShareViewModel.currentLogFile
@@ -409,21 +361,15 @@ class MainActivity : BaseAppCompatActivity() {
                 LauncherUpgradeOperation(
                     operation = launcherUpgradeViewModel.operation,
                     onChanged = { launcherUpgradeViewModel.operation = it },
-                    onIgnoredClick = { ver ->
-                        AllSettings.lastIgnoredVersion.save(ver)
-                    },
+                    onIgnoredClick = { ver -> AllSettings.lastIgnoredVersion.save(ver) },
                     onLinkClick = { eventViewModel.sendEvent(EventViewModel.Event.OpenLink(it)) }
                 )
 
                 val vcOperation by vulkanCheckerViewModel.vcOperation.collectAsStateWithLifecycle()
                 VulkanChecker(
                     operation = vcOperation,
-                    onChange = {
-                        vulkanCheckerViewModel.changeOperation(it)
-                    },
-                    startCheck = {
-                        eventViewModel.sendEvent(EventViewModel.Event.VulkanCheck)
-                    },
+                    onChange = { vulkanCheckerViewModel.changeOperation(it) },
+                    startCheck = { eventViewModel.sendEvent(EventViewModel.Event.VulkanCheck) },
                     confirmResult = {
                         vulkanCheckerViewModel.resumeCont()
                         AllSettings.autoVulkanChecker.save(false)
@@ -445,7 +391,6 @@ class MainActivity : BaseAppCompatActivity() {
     private suspend fun checkVulkan() {
         val driver = DriverPluginManager.getDriver()
         val useTurnip = !(AllSettings.zinkPreferSystemDriver.getValue() || driver.isLauncher)
-
         withContext(Dispatchers.Main) {
             val result = if (useTurnip) {
                 val tempDir = File(PathManager.DIR_CACHE, "vulkan_temp")
@@ -484,10 +429,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    private suspend fun handleHomePageEvent(
-        key: String,
-        data: String?
-    ) {
+    private suspend fun handleHomePageEvent(key: String, data: String?) {
         runCatching {
             when (key) {
                 "url" -> {
@@ -496,11 +438,7 @@ class MainActivity : BaseAppCompatActivity() {
                         if (trimmed.startsWith("http://", ignoreCase = true) ||
                             trimmed.startsWith("https://", ignoreCase = true)
                         ) {
-                            withContext(Dispatchers.Main) {
-                                this@MainActivity.openLink(trimmed)
-                            }
-                        } else {
-                            Logger.warning("HomePage", "Blocked unsafe URL from homepage event: $trimmed")
+                            withContext(Dispatchers.Main) { this@MainActivity.openLink(trimmed) }
                         }
                     }
                 }
@@ -509,18 +447,12 @@ class MainActivity : BaseAppCompatActivity() {
                     val serverIp = data?.let { raw ->
                         runCatching {
                             val parms = raw.split("=", limit = 2)
-                            if (parms.size == 2 && parms[0] == "server") {
-                                parms[1].trim()
-                            } else null
-                        }.onFailure { e ->
-                            Logger.warning("HomePage", "Failed to parse quick join server parameters: $raw", e)
+                            if (parms.size == 2 && parms[0] == "server") parms[1].trim() else null
                         }.getOrNull()
                     }
                     if (!serverIp.isNullOrEmpty()) {
                         if (serverIp.none { it.code < 32 }) {
                             launchGameViewModel.tryPlayServer(serverIp)
-                        } else {
-                            Logger.warning("HomePage", "Invalid server address from homepage event: $serverIp")
                         }
                     } else {
                         launchGameViewModel.tryLaunch()
@@ -528,14 +460,8 @@ class MainActivity : BaseAppCompatActivity() {
                 }
                 "copy" -> {
                     data?.let { text ->
-                        val trimmed = text.trim()
                         withContext(Dispatchers.Main) {
-                            copyText(
-                                null,
-                                trimmed.take(10_000),
-                                this@MainActivity,
-                                showToast = true
-                            )
+                            copyText(null, text.trim().take(10_000), this@MainActivity, showToast = true)
                         }
                     }
                 }
@@ -550,23 +476,15 @@ class MainActivity : BaseAppCompatActivity() {
                         }
                     }
                 }
-                else -> {
-                    Logger.warning("HomePage", "Unknown homepage event: key=$key, data=$data")
-                }
             }
-        }.onFailure { e ->
-            Logger.warning("HomePage", "Failed to handle homepage event: key=$key, data=$data", e)
         }
     }
 
     private suspend fun keepScreen(on: Boolean) {
         withContext(Dispatchers.Main) {
             window?.apply {
-                if (on) {
-                    addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
-                    clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
+                if (on) addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                else clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
     }
@@ -575,9 +493,7 @@ class MainActivity : BaseAppCompatActivity() {
         val locale = Locale.getDefault()
         val cloudDrive = link.cloudDrives.sortedByDescending {
             it.language.contains("_")
-        }.find { drive ->
-            locale.compareLangTag(drive.language)
-        }
+        }.find { drive -> locale.compareLangTag(drive.language) }
 
         withContext(Dispatchers.Main) {
             val builder = MaterialAlertDialogBuilder(this@MainActivity)
@@ -594,7 +510,6 @@ class MainActivity : BaseAppCompatActivity() {
                     dialog.dismiss()
                 }
             }
-
             builder.showThemed()
         }
     }
@@ -605,10 +520,7 @@ class MainActivity : BaseAppCompatActivity() {
             message: AndroidStringText
         ) {
             errorViewModel.showError(
-                ErrorViewModel.ThrowableMessage(
-                    title = title,
-                    message = message
-                )
+                ErrorViewModel.ThrowableMessage(title = title, message = message)
             )
         }
         TaskSystem.submitTask(
@@ -632,22 +544,16 @@ class MainActivity : BaseAppCompatActivity() {
                                     }
                                 )
                             },
-                            catchedError =  {
+                            catchedError = {
                                 showError(message = androidText(it.getMessageOrToString()))
                             },
-                            onFinished = {
-                                done = true
-                            }
+                            onFinished = { done = true }
                         )
                     }
                     ControlManager.refresh()
                     if (done) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                getString(R.string.generic_done),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this@MainActivity, getString(R.string.generic_done), Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -699,16 +605,8 @@ class MainActivity : BaseAppCompatActivity() {
             modpackImportViewModel.import(
                 context = this@MainActivity,
                 uri = uri,
-                onStart = {
-                    lifecycleScope.launch {
-                        keepScreen(true)
-                    }
-                },
-                onStop = {
-                    lifecycleScope.launch {
-                        keepScreen(false)
-                    }
-                }
+                onStart = { lifecycleScope.launch { keepScreen(true) } },
+                onStop = { lifecycleScope.launch { keepScreen(false) } }
             )
         }
         return uri != null
@@ -742,7 +640,6 @@ class MainActivity : BaseAppCompatActivity() {
     @SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (isCaptureKey) {
-            Logger.info(TAG, "Capture key event: $event")
             eventViewModel.sendEvent(EventViewModel.Event.Key.OnKeyDown(event))
             return true
         }
@@ -759,9 +656,7 @@ private fun PlayerNoticeDialog() {
         val notice = PlayerNoticeManager.fetchNotice()
         if (notice.isNotEmpty()) {
             if (PlayerNoticeManager.isDismissed(notice)) {
-                if (content != notice) {
-                    isDismissed = false
-                }
+                if (content != notice) isDismissed = false
                 content = notice
             } else {
                 content = notice
