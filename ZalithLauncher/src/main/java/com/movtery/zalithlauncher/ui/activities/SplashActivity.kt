@@ -31,8 +31,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.movtery.zalithlauncher.R
 
-// المتغير المطلوب لحل مشكلة ShortcutUtils (تم وضعه في المكان الصحيح)
+// ✅ جميع الثوابت المطلوبة للمشروع
 const val EXTRA_LAUNCH_VERSION = "extra_launch_version"
+const val EXTRA_OPEN_LOG = "extra_open_log"
+const val IMPORT_TYPE_MODPACK = "modpack"
+const val IMPORT_TYPE_CONTROLS = "controls"
 
 class SplashActivity : AppCompatActivity() {
 
