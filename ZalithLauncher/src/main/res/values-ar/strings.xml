@@ -526,15 +526,7 @@
     <string name="files_browse_folder">تصفح المجلد</string>
     <string name="files_importing">استيراد الملفات</string>
     <string name="files_delete_file">…هل أنت متأكد من رغبتك في حذف %s؟</string>
-    
-    <!-- خلفية الإقلاع (Splash Video) -->
-    <string name="settings_splash_video_title">خلفية الإقلاع</string>
-    <string name="settings_splash_video_summary">اختر فيديو MP4 يظهر عند فتح التطبيق</string>
-    <string name="settings_splash_video_none">لا يوجد فيديو محدد</string>
-    <string name="settings_splash_video_selected">✓ فيديو محدد</string>
-    <string name="settings_splash_video_reset">إزالة الفيديو</string>
-    <string name="settings_splash_video_permission">نحتاج صلاحية التخزين لحفظ الفيديو</string>
-    <string name="settings_splash_video_saved">تم حفظ الفيديو بنجاح</string>
-    <string name="settings_splash_video_removed">تم إزالة الفيديو</string>
-    <string name="settings_splash_video_failed">فشل حفظ الفيديو</string>
+<string name="my_videos">فيديوهاتي</string>
+<string name="my_videos_empty">لا توجد فيديوهات حالياً</string>
 </resources>
+
