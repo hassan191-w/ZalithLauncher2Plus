@@ -78,6 +78,7 @@ import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.coroutine.Task
 import com.movtery.zalithlauncher.coroutine.TaskSystem
 import com.movtery.zalithlauncher.game.version.installed.Version
+import com.movtery.zalithlauncher.game.youtube.YouTubeScreen
 import com.movtery.zalithlauncher.path.URL_ORIGINAL_PROJECT
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.AndroidStringText
@@ -605,6 +606,9 @@ private fun NavigationUI(
                         },
                         onNavigateToNews = {
                             backStack.navigateTo(NormalNavKey.News)
+                        },
+                        onNavigateToMyVideos = {
+                            backStack.navigateTo(NormalNavKey.MyVideos)
                         }
                     )
                 }
@@ -613,6 +617,10 @@ private fun NavigationUI(
                         key = key,
                         backStackViewModel = screenBackStackModel
                     )
+                }
+                // ✅ شاشة فيديوهاتي على يوتيوب
+                entry<NormalNavKey.MyVideos> {
+                    YouTubeScreen()
                 }
                 entry<NestedNavKey.Settings> { key ->
                     SettingsScreen(
