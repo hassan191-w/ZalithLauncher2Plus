@@ -139,6 +139,7 @@ fun LauncherScreen(
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit = {},
     onNavigateToNews: () -> Unit = {},
+    onNavigateToMyVideos: () -> Unit = {},
 ) {
     BaseScreen(
         screenKey = NormalNavKey.LauncherMain,
@@ -171,6 +172,9 @@ fun LauncherScreen(
                         remove = NestedNavKey.VersionSettings::class,
                         screenKey = NormalNavKey.VersionsManager
                     )
+                },
+                onMyVideosClick = {
+                    onNavigateToMyVideos()
                 },
                 onInfoClick = {
                     showAboutDialog = true
