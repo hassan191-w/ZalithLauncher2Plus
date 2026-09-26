@@ -1452,4 +1452,230 @@
     <string name="control_editor_special_joystick_style_lock_mark_color">Forward Lock Indicator Color</string>
     <string name="control_editor_special_joystick_style_background_rounded_corner">Background Corner Radius</string>
     <string name="control_editor_special_joystick_style_joystick_rounded_corner">Joystick Corner Radius</string>
-    <string name="control_editor_special_joystick_style_joystick_size">
+    <string name="control_editor_special_joystick_style_joystick_size">Joystick Size</string>
+    <string name="control_editor_exit_message">Are you sure you want to exit directly? This will cause any changes to be unsaved. If you need to save, please check the editor menu.</string>
+    <string name="control_editor_exit_confirm">Exit Directly</string>
+    <!-- About -->
+    <string name="about_launcher_title">About Launcher</string>
+    <string name="about_launcher_version">Launcher Version: %s</string>
+    <string name="about_launcher_author_movtery_title">MovTery</string>
+    <string name="about_launcher_author_movtery_text">Author of Zalith Launcher 2</string>
+    <string name="about_launcher_author_star1xr_title">Star1xr</string>
+    <string name="about_launcher_author_star1xr_text">Author of Zalith Launcher 2 Plus</string>
+    <string name="about_launcher_project_link">GitHub Link</string>
+    <string name="about_sponsor">Sponsorship Support</string>
+    <string name="disclaimer_title">Unofficial Version</string>
+    <string name="disclaimer_content">This is an unofficial modified version of Zalith Launcher 2 Plus.</string>
+    <string name="disclaimer_original_repo">Original Repo</string>
+    <string name="launcher_fork_subtitle">a fork of Zalith Launcher 2 Plus</string>
+    <string name="settings_renderer_external_driver">External Driver</string>
+    <string name="settings_renderer_download_turnip">Download Turnip Driver</string>
+    <string name="settings_renderer_download_turnip_summary">Select a Turnip driver version and download it from GitHub</string>
+    <string name="settings_renderer_turnip_downloading">Downloading Turnip Driver...</string>
+    <string name="settings_renderer_turnip_extracting">Extracting Turnip Driver...</string>
+    <string name="settings_renderer_turnip_success">Turnip Driver installed successfully</string>
+    <string name="launcher_ram_usage">RAM: %1$dMB / %2$dMB</string>
+    <string name="launcher_fps_display">FPS: %d</string>
+    <string name="about_acknowledgements_title">Acknowledgements</string>
+    <string name="about_acknowledgements_pojav_text">%s uses the launch backend from PojavLauncher</string>
+    <string name="about_acknowledgements_pcl_text">%s references parts of the implementation from PCL2</string>
+    <string name="about_acknowledgements_fcl_text">%s incorporates code from FCL and references parts of its implementation</string>
+    <string name="about_acknowledgements_hmcl_text">%s incorporates code from HMCL and references parts of its implementation</string>
+    <string name="about_acknowledgements_mcmod">MCMod (mcmod.cn)</string>
+    <string name="about_acknowledgements_mcmod_text">%s uses Simplified Chinese translations of mods and modpacks from MCMod</string>
+    <string name="about_acknowledgements_bangbang93_text">%s uses the BMCL API mirror source</string>
+    <string name="about_acknowledgements_mcim_text">%s uses the MCIM mirror source</string>
+    <string name="about_acknowledgements_github_community">GitHub Community</string>
+    <string name="about_acknowledgements_github_community_text">All issue reporters and contributors from the GitHub community</string>
+    <string name="about_acknowledgements_weblate_community">Weblate Community</string>
+    <string name="about_acknowledgements_weblate_community_text">All translators who participated in community language localization</string>
+    <string name="about_plugin_title">Loaded Plugins</string>
+    <string name="about_library_title">Third-Party Libraries</string>
+    <!--  Check for Updates  -->
+    <string name="upgrade_title">Check for Updates</string>
+    <string name="upgrade_new">New Version Found</string>
+    <string name="upgrade_more">View</string>
+    <string name="upgrade_files">Available APK</string>
+    <string name="upgrade_files_arch">Architecture: %s</string>
+    <string name="upgrade_version_change">Version: %s</string>
+    <string name="upgrade_version_size">Size: %s</string>
+    <string name="upgrade_version_create_at">Updated At: %s</string>
+    <string name="upgrade_get_remote_failed">Failed to check for updates. Please try again later.</string>
+    <string name="upgrade_is_latest">You are already on the latest version</string>
+    <string name="upgrade_cloud_drive">Cloud Drive</string>
+    <!--  Url  -->
+    <string name="url_wiki_minecraft_game_release">https://minecraft.wiki/w/Java_Edition_%s</string>
+    <string name="url_wiki_minecraft_game_snapshot">https://minecraft.wiki/w/Java_Edition_%s</string>
+    <!-- Language -->
+    <string name="language_english" translatable="false">English</string>
+    <string name="language_simplified_chinese" translatable="false">简体中文</string>
+    <string name="language_traditional_chinese" translatable="false">繁體中文</string>
+    <string name="language_japanese" translatable="false">日本語</string>
+    <string name="language_russian" translatable="false">Русский</string>
+    <string name="language_vietnamese" translatable="false">Tiếng Việt</string>
+    <string name="language_indonesian" translatable="false">Indonesia</string>
+    <string name="language_turkish" translatable="false">Türkçe</string>
+    <string name="language_spanish" translatable="false">Español</string>
+    <string name="language_portuguese" translatable="false">Português</string>
+    <string name="language_arabic" translatable="false">اَلْعَرَبِيَّةُ</string>
+    <string name="language_italian" translatable="false">Italiano</string>
+    <string name="language_brazilian_portuguese" translatable="false">Português (Brasil)</string>
+    <string name="language_uyghur" translatable="false">ۋىغرۇچە</string>
+    <string name="language_filipino" translatable="false">Filipino</string>
+    <string name="language_thai" translatable="false">ไทย</string>
+    <string name="language_korean" translatable="false">한국어</string>
+    <!-- Vibration Kind -->
+    <string name="vibrate_kind_one_shot">Constant</string>
+    <string name="vibrate_kind_click">Click</string>
+    <string name="vibrate_kind_double_click">Double Click</string>
+    <string name="vibrate_kind_heavy_click">Heavy Click</string>
+    <string name="vibrate_kind_tick">Tick</string>
+    <string name="festivals_new_year">Happy New Year!</string>
+    <string name="festivals_april_fools">Happy April Fools\' Day!</string>
+    <string name="festivals_christmas">Merry Christmas!</string>
+    <!-- Custom Cape Upload -->
+    <string name="account_change_cape_upload">Upload Cape from Gallery</string>
+    <string name="account_change_cape_reset">Reset Cape</string>
+    <string name="account_change_cape_invalid">Invalid cape file! Cape must be 64x32 pixels PNG.</string>
+    <string name="account_change_cape_failed_to_import">Failed to import cape: %s</string>
+    <string name="account_capes_install">Install Capes</string>
+    <string name="account_capes_install_from_labynet">Install from Laby.net</string>
+    <string name="account_capes_select">Capes</string>
+    <string name="account_capes_source_imported">Gallery</string>
+    <string name="account_capes_saved_toast">Cape saved to capes</string>
+    <string name="account_capes_select_title">My Capes</string>
+    <string name="account_capes_no_capes">No capes installed yet. Tap "Install Capes" to get started.</string>
+    <string name="account_capes_none">No Cape</string>
+    <string name="account_capes_favorite">Favorite</string>
+    <string name="account_capes_unfavorite">Unfavorite</string>
+    <string name="account_capes_activate">Activate</string>
+    <string name="account_capes_rename_hint">Cape name</string>
+    <string name="account_capes_labynet_title">Cape Gallery</string>
+    <string name="account_capes_labynet_loading">Loading capes…</string>
+    <string name="account_capes_labynet_download">Download</string>
+    <string name="account_capes_labynet_downloading">Downloading…</string>
+    <string name="account_capes_labynet_downloaded">Cape \"%s\" downloaded</string>
+    <string name="account_capes_labynet_download_failed">Download failed: %s</string>
+    <string name="account_capes_labynet_failed">Failed to load capes: %s</string>
+    <string name="account_capes_labynet_no_capes">No capes found for this account.</string>
+    <string name="account_capes_delete_title">Delete Cape</string>
+    <string name="account_capes_delete_message">Are you sure you want to delete \"%s\"?</string>
+    <!-- Rank and Play Time -->
+    <string name="rank_novice">Novice</string>
+    <string name="rank_player">Player</string>
+    <string name="rank_experienced">Experienced</string>
+    <string name="rank_veteran">Veteran</string>
+    <string name="rank_master">Master</string>
+    <string name="rank_legend">Legend</string>
+    <string name="play_time_format">Play Time: %s Hours</string>
+    <string name="settings_chroma_name_title">Chroma Username</string>
+    <string name="chroma_mode_red_blue">Red &amp; Blue</string>
+    <string name="chroma_mode_sunset">Sunset</string>
+    <string name="chroma_mode_ocean">Ocean</string>
+    <string name="chroma_mode_forest">Forest</string>
+    <string name="chroma_mode_neon">Neon</string>
+    <string name="settings_tip_import_export">You can export or import settings from launcher settings.</string>
+    <string name="settings_import">Import Settings</string>
+    <string name="settings_export">Export Settings</string>
+    <string name="settings_import_accounts">Import Accounts</string>
+    <string name="settings_export_accounts">Export Accounts</string>
+    <string name="settings_import_success">Import successful!</string>
+    <string name="settings_import_failed">Import failed!</string>
+    <string name="settings_export_success">Exported to: %s</string>
+    <string name="settings_export_failed">Export failed!</string>
+    <string name="storage_permission_request_title">Storage Permission Required</string>
+    <string name="storage_permission_request_message">To export settings/accounts to public storage, we need storage permission.</string>
+    <!-- MobileGlues Settings -->
+    <string name="mobileglues_settings_title">MobileGlues Settings</string>
+    <string name="mobileglues_section_rendering">Rendering</string>
+    <string name="mobileglues_section_extensions">Extensions</string>
+    <string name="mobileglues_section_cache">Cache</string>
+    <string name="mobileglues_section_other">Other</string>
+    <string name="mobileglues_angle_mode">ANGLE Mode</string>
+    <string name="mobileglues_angle_disable">Disable</string>
+    <string name="mobileglues_angle_auto">Auto</string>
+    <string name="mobileglues_angle_force">Force</string>
+    <string name="mobileglues_angle_compatible">Compatible</string>
+    <string name="mobileglues_no_error_mode">No Error Mode</string>
+    <string name="mobileglues_no_error_strict">Strict</string>
+    <string name="mobileglues_no_error_moderate">Moderate</string>
+    <string name="mobileglues_no_error_relaxed">Relaxed</string>
+    <string name="mobileglues_no_error_ignore_all">Ignore All</string>
+    <string name="mobileglues_multidraw_mode">Multidraw Mode</string>
+    <string name="mobileglues_multidraw_auto">Auto</string>
+    <string name="mobileglues_multidraw_basevertex">BaseVertex</string>
+    <string name="mobileglues_multidraw_compute">Compute</string>
+    <string name="mobileglues_angle_depth_clear_fix">ANGLE Depth Clear Fix</string>
+    <string name="mobileglues_angle_clear_off">Off</string>
+    <string name="mobileglues_angle_clear_mode1">Mode 1</string>
+    <string name="mobileglues_angle_clear_mode2">Mode 2</string>
+    <string name="mobileglues_custom_gl_version">Custom GL Version</string>
+    <string name="mobileglues_gl_disabled">Disabled</string>
+    <string name="mobileglues_compute_shader">Compute Shader</string>
+    <string name="mobileglues_compute_shader_summary">Enable EXT_compute_shader</string>
+    <string name="mobileglues_timer_query">Timer Query</string>
+    <string name="mobileglues_timer_query_summary">Enable EXT_timer_query (inverted: off = enabled)</string>
+    <string name="mobileglues_direct_state_access">Direct State Access</string>
+    <string name="mobileglues_direct_state_access_summary">Enable EXT_direct_state_access</string>
+    <string name="mobileglues_cache_size_label">GLSL Cache Size (MB)</string>
+    <string name="mobileglues_cache_size_supporting">Set -1 to clear cache; 0 uses default (32)</string>
+    <string name="mobileglues_saved_toast">MobileGlues settings saved</string>
+    <string name="mobileglues_reset_confirm_message">Are you sure you want to reset MobileGlues settings?</string>
+    <string name="download_game_classic_picker">Classic version list</string>
+    <string name="download_game_classic_picker_summary">Show only release versions without search bar</string>
+    <string name="download_game_installed_at_top">Installed versions first</string>
+    <string name="versions_manage_select_default_folder">Set Default Game Folder</string>
+    <string name="versions_manage_select_default_folder_title">Select Default Game Folder</string>
+    <string name="versions_manage_move_versions">Move Versions</string>
+    <string name="versions_manage_move_versions_select_versions">Select versions to move</string>
+    <string name="versions_manage_move_versions_select_target">Select target game folder</string>
+    <string name="versions_manage_move_versions_summary">Review move</string>
+    <string name="versions_manage_move_versions_progress">Moving versions…</string>
+    <string name="versions_manage_move_versions_no_versions">No versions found (all of the versions may not have version isolation)</string>
+    <string name="versions_manage_move_versions_version_count">%1$d version(s) selected</string>
+    <string name="versions_manage_move_versions_next">Next</string>
+    <string name="versions_manage_move_versions_finish">Finish</string>
+    <string name="versions_manage_move_versions_from">From</string>
+    <string name="versions_manage_move_versions_to">To</string>
+    <string name="versions_manage_move_versions_moving">Moving %1$s…</string>
+    <string name="versions_manage_move_versions_done">Move complete</string>
+    <string name="versions_manage_move_versions_failed">Move failed</string>
+    <!-- Screen Recorder -->
+    <string name="quick_access_shortcut_recordings">Recordings</string>
+    <string name="game_menu_option_screen_recorder">Screen Recorder</string>
+    <string name="recorder_stop_and_save">Stop &amp; Save</string>
+    <string name="recorder_pause">Pause</string>
+    <string name="recorder_resume">Resume</string>
+    <string name="recorder_started">Recording started</string>
+    <string name="recorder_saved">Recording saved</string>
+    <string name="recorder_error">Recording failed to start</string>
+    <string name="page_title_recordings">Recordings</string>
+    <string name="recordings_empty">No recordings yet.\nStart recording from the in-game menu.</string>
+    <string name="recordings_play">Play</string>
+    <string name="recordings_share">Share</string>
+    <string name="recordings_rename">Rename</string>
+    <string name="recordings_rename_hint">File name (without extension)</string>
+    <string name="recordings_reveal">Show in File Manager</string>
+    <string name="recordings_delete_title">Delete recording?</string>
+    <string name="recordings_delete_message">"%s" will be permanently deleted.</string>
+    <string name="recorder_mic_on">Microphone On</string>
+    <string name="recorder_mic_off">Microphone Off</string>
+    <string name="recorder_notification_channel_name">Screen Recording</string>
+    <string name="recorder_notification_title">Recording in progress</string>
+    <string name="recorder_notification_text">Game audio and screen are being captured</string>
+
+    <!-- Splash Screen Video -->
+    <string name="settings_splash_video_title">Splash Screen Video</string>
+    <string name="settings_splash_video_summary">Choose an MP4 video to show when the launcher opens</string>
+    <string name="settings_splash_video_none">No video selected</string>
+    <string name="settings_splash_video_selected">✓ Video selected</string>
+    <string name="settings_splash_video_reset">Remove Video</string>
+    <string name="settings_splash_video_permission">Storage permission required to save the video</string>
+    <string name="settings_splash_video_saved">Video saved successfully</string>
+    <string name="settings_splash_video_removed">Video removed</string>
+    <string name="settings_splash_video_failed">Failed to save video</string>
+
+    <!-- My YouTube Videos -->
+    <string name="my_videos">My Videos</string>
+    <string name="my_videos_empty">No videos available</string>
+</resources>
