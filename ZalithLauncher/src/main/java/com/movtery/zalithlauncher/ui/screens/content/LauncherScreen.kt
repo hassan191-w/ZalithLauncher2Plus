@@ -173,9 +173,6 @@ fun LauncherScreen(
                         screenKey = NormalNavKey.VersionsManager
                     )
                 },
-                onMyVideosClick = {
-                    onNavigateToMyVideos()
-                },
                 onInfoClick = {
                     showAboutDialog = true
                 }
@@ -195,7 +192,8 @@ fun LauncherScreen(
                     onNavigateToStats = onNavigateToStats,
                     onNavigateToPlayTimeStats = onNavigateToPlayTimeStats,
                     onNavigateToLog = onNavigateToLog,
-                    onNavigateToNews = onNavigateToNews
+                    onNavigateToNews = onNavigateToNews,
+                    onNavigateToMyVideos = onNavigateToMyVideos
                 )
             }
 
@@ -239,6 +237,7 @@ private fun ContentMenu(
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit,
     onNavigateToNews: () -> Unit = {},
+    onNavigateToMyVideos: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val yOffset by swapAnimateDpAsState(
@@ -258,7 +257,6 @@ private fun ContentMenu(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (BuildConfig.DEBUG) {
-            //debug版本关不掉的警告，防止有人把测试版当正式版用 XD
             BackgroundCard(shape = MaterialTheme.shapes.extraLarge) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -283,16 +281,15 @@ private fun ContentMenu(
             }
         }
 
-        // Stats grid fills remaining space — no scroll
         StatsGrid(
             modifier = Modifier.weight(1f),
             onNavigateToStats = onNavigateToStats,
             onNavigateToPlayTimeStats = onNavigateToPlayTimeStats,
             onNavigateToLog = onNavigateToLog,
-            onNavigateToNews = onNavigateToNews
+            onNavigateToNews = onNavigateToNews,
+            onNavigateToMyVideos = onNavigateToMyVideos
         )
 
-        // Home page content below (only shown when configured)
         when (val state = pageState) {
             is HomePageState.Blank -> {}
             is HomePageState.Loading -> {
@@ -340,6 +337,7 @@ private fun StatsGrid(
     onNavigateToPlayTimeStats: () -> Unit = {},
     onNavigateToLog: (String) -> Unit,
     onNavigateToNews: () -> Unit = {},
+    onNavigateToMyVideos: () -> Unit = {},
 ) {
     val versions by VersionsManager.versions.collectAsStateWithLifecycle()
     val versionNames = remember(versions) { versions.map { it.getVersionName() } }
@@ -386,7 +384,8 @@ private fun StatsGrid(
             )
         }
         YouTubeCard(
-            modifier = Modifier.fillMaxWidth().height(72.dp)
+            modifier = Modifier.fillMaxWidth().height(72.dp),
+            onClick = onNavigateToMyVideos
         )
         NewsCard(
             modifier = Modifier.fillMaxWidth().height(72.dp),
@@ -397,22 +396,17 @@ private fun StatsGrid(
 
 @Composable
 private fun YouTubeCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
-    val uriHandler = LocalUriHandler.current
-
     BackgroundCard(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .combinedClickable(
-                    onClick = {
-                        uriHandler.openUri("https://youtube.com/@hassanzahran-oy4gd")
-                    }
-                )
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -426,12 +420,12 @@ private fun YouTubeCard(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = "قناتي على يوتيوب",
+                    text = "فيديوهاتي",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "شاهد آخر الفيديوهات والدروس",
+                    text = "شاهد آخر الفيديوهات",
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(0.7f)
                 )
