@@ -89,6 +89,7 @@ fun SideBar(
     isVisible: Boolean,
     onFpsClick: () -> Unit,
     onVersionsClick: () -> Unit,
+    onMyVideosClick: () -> Unit,
     onInfoClick: () -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -134,6 +135,7 @@ fun SideBar(
                     expanded = expanded,
                     onFpsClick = onFpsClick,
                     onVersionsClick = onVersionsClick,
+                    onMyVideosClick = onMyVideosClick,
                     onInfoClick = onInfoClick,
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
@@ -152,6 +154,7 @@ private fun SideBarMenuContent(
     expanded: Boolean,
     onFpsClick: () -> Unit,
     onVersionsClick: () -> Unit,
+    onMyVideosClick: () -> Unit,
     onInfoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -196,6 +199,14 @@ private fun SideBarMenuContent(
                     icon = painterResource(R.drawable.ic_assignment_filled),
                     label = stringResource(R.string.page_title_version_manage),
                     onClick = onVersionsClick
+                )
+            }
+
+            StaggeredItem(delay = 150) {
+                SideBarShortcut(
+                    icon = painterResource(R.drawable.ic_video_settings),
+                    label = stringResource(R.string.my_videos),
+                    onClick = onMyVideosClick
                 )
             }
 
