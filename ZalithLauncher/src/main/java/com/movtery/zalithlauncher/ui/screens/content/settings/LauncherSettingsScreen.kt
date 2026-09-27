@@ -244,7 +244,7 @@ fun LauncherSettingsScreen(
                 }
             }
 
-            //启动器背景设置板块
+            //啟動器背景設置板塊
             LocalBackgroundViewModel.current?.let { backgroundViewModel ->
                 AnimatedItem(scope) { yOffset ->
                     SettingsCardColumn(
