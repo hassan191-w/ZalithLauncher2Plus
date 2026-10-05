@@ -24,6 +24,8 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build arm64-v8a APK
+      env:
+        CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
       run: ./gradlew ZalithLauncher:assembleRelease -Darch=arm64
 
     - name: Upload APK
